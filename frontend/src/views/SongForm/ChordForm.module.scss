@@ -1,0 +1,10 @@
+.mainContainer {
+    margin: 5px;
+    border: 1px solid black;
+}
+
+.controlsContainer {
+    & * {
+        border: 1px solid black;
+    }
+}

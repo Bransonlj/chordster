@@ -4,6 +4,7 @@ import { keyToString } from "../../utils/chords";
 import SectionDetails from "./SectionDetails";
 import Tippy from "@tippyjs/react";
 import 'tippy.js/dist/tippy.css'; // optional
+import styles from './SongDetails.module.scss';
 
 // dummy song for testing
 const song: Song = {
@@ -75,25 +76,29 @@ export default function SongDetails() {
     const [isNumericView, setIsNumericView] = useState<boolean>(false);
 
     return (
-        <div>
-            <div>
+        <div className={styles.mainContainer}>
+            <div className={styles.controlContainer}>
                 <label onClick={() => setIsNumericView(!isNumericView)}>Numeric View</label>
-                <label onClick={() => setTranspose(transpose - 1 < 0 ? 11 : transpose - 1)}>-</label>
-                <label>transpose {transpose}</label>
-                <label onClick={() => setTranspose(transpose + 1 > 11 ? 0 : transpose + 1)}>+</label>
+                <div className={styles.transpose}>
+                    <label onClick={() => setTranspose(transpose - 1 < 0 ? 11 : transpose - 1)}>-</label>
+                    <label>transpose {transpose}</label>
+                    <label onClick={() => setTranspose(transpose + 1 > 11 ? 0 : transpose + 1)}>+</label>
+                </div>
             </div>
-            <div>
+            <div className={styles.songDetailsContainer}>
                 <label>{song.name}</label>
                 <label>{song.artist}</label>
-                <label>capo: {song.capo}</label>
-                {
-                    transpose !== 0 &&  <Tippy content="To play in original Key">
-                        <label>capo: { song.capo - transpose < 0 ? song.capo - transpose + 12 : song.capo - transpose }</label>
-                    </Tippy>
-                }
                 <label>key: {keyToString(song.key)}</label>
+                <div className={styles.capoContainer}>
+                    <label>capo: {song.capo}</label>
+                    {
+                        transpose !== 0 &&  <Tippy content="To play in original Key">
+                            <label>capo: { song.capo - transpose < 0 ? song.capo - transpose + 12 : song.capo - transpose }</label>
+                        </Tippy>
+                    }
+                </div>
             </div>
-            <div>
+            <div className={styles.sectionsContainer}>
                 {
                     song.sections.map((section: Section, index: number)  => (
                         <div key={index}>

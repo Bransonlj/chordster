@@ -1,0 +1,14 @@
+.mainContainer {
+    border: 1px solid black;
+}
+
+.sectionDetailsContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+.chordsContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}

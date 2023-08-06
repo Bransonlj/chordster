@@ -7,38 +7,9 @@ import { isDefaultSection } from "../../utils/songs";
 import SwapGroup from "./SwapGroup";
 import { Key } from "../../types/chords";
 import { getAllKeys, keyToString } from "../../utils/chords";
+import styles from './SongForm.module.scss';
 
-function CloneSection({ control, insert, sectionIndex }: {control: Control<Song>, insert: UseFieldArrayInsert<Song, "sections">, sectionIndex:number}) {
-    const sectionValue: Section = useWatch({
-      control,
-      name: `sections.${sectionIndex}`
-    });
-  
-    return (
-      <label onClick={() => insert(sectionIndex + 1, sectionValue)}>Copy</label>
-    )
-}
-
-function DeleteSection({ control, remove, sectionIndex }: {control: Control<Song>, remove: UseFieldArrayRemove, sectionIndex: number}) {
-    function handleDeleteSection(section: Section) {
-        if (isDefaultSection(section)) {
-            remove(sectionIndex)
-        } else if (window.confirm("Delete section?")) {
-            remove(sectionIndex);
-        }
-    }
-
-    const sectionValue = useWatch({
-      control,
-      name: `sections.${sectionIndex}`
-    })
-  
-    return (
-      <label onClick={ () => handleDeleteSection(sectionValue) }>Delete Section</label>
-    )
-  }
-
-  const allKeys: Key[] = getAllKeys();
+const allKeys: Key[] = getAllKeys();
 
 export default function SongForm() {
 
@@ -48,7 +19,7 @@ export default function SongForm() {
     const { control, register, reset, formState: { errors }, handleSubmit } = useForm<Song>({
         defaultValues: loadedSong,
     });
-    const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
+    const { fields: sections, append: appendSection, remove: removeSection, swap: swapSection, insert: insertSection } = useFieldArray({
         control, // control props comes from useForm (optional: if you are using FormContext)
         name: "sections", // unique name for your Field Array
         rules: { minLength: 1 },
@@ -60,7 +31,7 @@ export default function SongForm() {
 
     return (
         <div>
-            <form onSubmit={onSubmit}>
+            <form onSubmit={onSubmit} className={styles.formContainer}>
                 <label>Song Name: </label>
                 <input {...register("name", { required: true })} />
                 {
@@ -90,23 +61,32 @@ export default function SongForm() {
                         />
                     ) }
                 />
+                <div>
+                    <label onClick={ () => appendSection(defaultSection) }>Add Section</label>
+                    <input type="submit"/>
+                </div>
+
+                <div className={styles.sectionsContainer}>
                 {   
-                    fields.map((field, sectionIndex) => (
-                        // important to include key with field's id
-                        <div key={field.id}> 
-                            <SectionForm section={field} sectionIndex={sectionIndex} control={control} register={register} errors={errors} />
-                            <div className="songForm__sectionButtonContainer">
-                            <DeleteSection control={control} remove={remove} sectionIndex={sectionIndex} />
-                            <CloneSection control={control} sectionIndex={sectionIndex} insert={insert}></CloneSection>
-                            <SwapGroup isSwapUp index={sectionIndex} swap={swap} />
-                            <SwapGroup isSwapUp={false} index={sectionIndex} swap={swap} length={fields.length} />
-                            </div>
-                        </div>
+                    sections.map((field, sectionIndex) => (
+                        <SectionForm 
+                            key={field.id}
+                            section={field} 
+                            sectionIndex={sectionIndex} 
+                            control={control} 
+                            register={register} 
+                            errors={errors}
+                            removeSection={removeSection}
+                            insertSection={insertSection}
+                            swapSection={swapSection}
+                            numSections={sections.length} />
+
                     ))
                 }
-                <div className="songForm__songButtons">
-                    <label onClick={ () => append(defaultSection) }>Add Section</label>
-                    <input type="submit" className="songForm__submitButton" />
+                </div>
+                <div>
+                    <label onClick={ () => appendSection(defaultSection) }>Add Section</label>
+                    <input type="submit"/>
                 </div>
 
             </form>

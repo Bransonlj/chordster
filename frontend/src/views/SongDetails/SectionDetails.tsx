@@ -2,6 +2,7 @@ import { Key } from "../../types/chords";
 import { ChordLyric, Section } from "../../types/songs"
 import { isEmptyKey, keyToString } from "../../utils/chords";
 import ChordLyricDetails from "./ChordLyricDetails";
+import styles from './SectionDetails.module.scss'
 
 interface SectionDetailsProps {
     section: Section;
@@ -12,10 +13,12 @@ interface SectionDetailsProps {
 
 export default function SectionDetails({ section, transpose, songKey, isNumericView }: SectionDetailsProps) {
     return (
-        <div>
-            <label>{section.title}</label>
-            <label>key: {keyToString(section.key)}</label>
-            <div>
+        <div className={styles.mainContainer}>
+            <div className={styles.sectionDetailsContainer}>
+                <label>{section.title}</label>
+                <label>key: {keyToString(section.key)}</label>
+            </div>
+            <div className={styles.chordsContainer}>
                 {
                     section.chords.map((chordLyric: ChordLyric, index: number) => (
                         <div key={index}>

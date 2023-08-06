@@ -1,6 +1,7 @@
 import { Chord, Key } from "../../types/chords";
 import { ChordLyric } from "../../types/songs"
 import { chordToString, numericToString, toNumericChord, transposeChord } from "../../utils/chords";
+import styles from './ChordLyricDetails.module.scss';
 
 interface ChordLyricDetailsProps {
     chordLyric: ChordLyric;
@@ -20,8 +21,8 @@ function displayChord(chord: Chord, transpose: number, chordKey: Key, isNumericV
 export default function ChordLyricDetails({ chordLyric, transpose, chordKey, isNumericView }: ChordLyricDetailsProps) {
 
     return (
-        <div>
-            <label>{displayChord(chordLyric.chord, transpose, chordKey, isNumericView)}</label>
+        <div className={styles.mainContainer}>
+            <label className={styles.chordContainer}>{displayChord(chordLyric.chord, transpose, chordKey, isNumericView)}</label>
             <label>{chordLyric.lyric}</label>
         </div>
     )
