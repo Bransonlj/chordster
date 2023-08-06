@@ -30,13 +30,21 @@ export function chordToString(chord: Chord | undefined): string {
     if (chord) {
         if (isEmptyChord(chord)) {
             // return "N/A"
-            return chord.noteLetter
+            return emptyNoteLetter;
         } else {
             // normal chord
             return chord.noteLetter + chord.accidental + chord.chordType;
         }
     } else {
         return "";
+    }
+}
+
+export function numericToString(numeric: NumericChord): string {
+    if (isEmptyNumericChord(numeric)) {
+        return emptyNumeral;
+    } else {
+        return numeric.numeral + numeric.accidental + numeric.chordType;
     }
 }
 
@@ -190,6 +198,10 @@ export function isEmptyChord(chord: Chord): boolean {
     return chord.noteLetter === emptyNoteLetter;
 }
 
+export function isEmptyNumericChord(chord: NumericChord): boolean {
+    return chord.numeral === emptyNumeral;
+}
+
 // checks if key isEmpty depending on noteLetter, regardless of accidental or isMajor
 export function isEmptyKey(key: Key): boolean {
     return key.noteLetter === emptyNoteLetter;
@@ -256,7 +268,7 @@ export function toNumericChord(chord: Chord, key: Key): NumericChord {
 
     // guarateed to be non-empty
     const keyValue: number = valueOfLetter(key.noteLetter as NonEmptyNoteLetter) + valueOfAccidental(key.accidental);
-    const chordValue: number = valueOfLetter(chord.noteLetter as NonEmptyNoteLetter) + valueOfAccidental(chord.accidental);
+    const chordValue: number = valueOfLetter(chord.noteLetter as NonEmptyNoteLetter);
     let interval: number = chordValue - keyValue;
     if (interval > 11) {
         interval -= 12;
