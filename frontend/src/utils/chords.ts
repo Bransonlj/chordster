@@ -1,7 +1,9 @@
-import { Accidental, Chord, NoteLetter, NumericChord, Key, majorChords, minorChords, Numeral, Letters, Accidentals, ChordType } from "../types/chords";
+import { Accidental, Chord, NoteLetter, NumericChord, Key, majorChords, minorChords, Numeral, Letters, Accidentals, ChordType, NonEmptyNoteLetter, emptyNoteLetter, NonEmptyNumeral, emptyNumeral, defaultChord, defaultKey } from "../types/chords";
 
 export function getAllChords(): Chord[] {
     const chords: Chord[] = [];
+    // Add default chord
+    chords.push(defaultChord);
     Letters.forEach((letter: NoteLetter) => {
         Accidentals.forEach((accidental: Accidental) => {
             majorChords.forEach((chordType: ChordType) => {
@@ -26,7 +28,13 @@ export function getAllChords(): Chord[] {
 
 export function chordToString(chord: Chord | undefined): string {
     if (chord) {
-        return chord.noteLetter + chord.accidental + chord.chordType;
+        if (isEmptyChord(chord)) {
+            // return "N/A"
+            return chord.noteLetter
+        } else {
+            // normal chord
+            return chord.noteLetter + chord.accidental + chord.chordType;
+        }
     } else {
         return "";
     }
@@ -34,6 +42,8 @@ export function chordToString(chord: Chord | undefined): string {
 
 export function getAllKeys(): Key[] {
     const keys: Key[] = [];
+    // Add default key
+    keys.push(defaultKey)
     Letters.forEach((letter: NoteLetter) => {
         Accidentals.forEach((accidental: Accidental) => {
             keys.push({
@@ -54,20 +64,25 @@ export function getAllKeys(): Key[] {
 
 export function keyToString(key: Key | undefined): string {
     if (key) {
-        return key.isMajor 
-        ? key.noteLetter + key.accidental
-        : key.noteLetter + key.accidental + "m";
+        if (isEmptyKey(key)) {
+            // return "N/A"
+            return key.noteLetter
+        } else {
+            // normal key
+            return key.isMajor 
+                ? key.noteLetter + key.accidental
+                : key.noteLetter + key.accidental + "m";
+        }
     } else {
         return "";
     }
-
 }
 
 /* 
-    Notes are counter from 0 to 11
+    Notes are counted from 0 to 11
  */
 
-function valueOfLetter(letter: NoteLetter): number {
+function valueOfLetter(letter: NonEmptyNoteLetter): number {
     switch (letter) {
         case "A":
             return 0;
@@ -86,7 +101,7 @@ function valueOfLetter(letter: NoteLetter): number {
     }
 }
 
-function letterFromValue(num: number): NoteLetter | undefined {
+function letterFromValue(num: number): NonEmptyNoteLetter | undefined {
     switch (num) {
         case 0:
             return "A";
@@ -118,7 +133,7 @@ function valueOfAccidental(accidental: Accidental): number {
     }
 }
 
-function numeralFromValue(value: number, isKeyMajor: boolean, isChordMajor: boolean): Numeral | undefined {
+function numeralFromValue(value: number, isKeyMajor: boolean, isChordMajor: boolean): NonEmptyNumeral | undefined {
     if (isKeyMajor) {
         switch (value) {
             case 0: 
@@ -170,10 +185,25 @@ export function isMinorChord(chord: Chord): boolean {
     return minorChords.includes(chord.chordType as any);
 }
 
+// checks if chord isEmpty depending on noteLetter, regardless of accidental or chordType
+export function isEmptyChord(chord: Chord): boolean {
+    return chord.noteLetter === emptyNoteLetter;
+}
+
+// checks if key isEmpty depending on noteLetter, regardless of accidental or isMajor
+export function isEmptyKey(key: Key): boolean {
+    return key.noteLetter === emptyNoteLetter;
+}
+
 
 export function transposeChord(chord: Chord, amount: number): Chord {
     let accidental: Accidental = chord.accidental;
-    let value: number = valueOfLetter(chord.noteLetter) + amount;
+    if (isEmptyChord(chord)) {
+        // empty chord (N/A), don't transpose
+        return chord
+    }
+
+    let value: number = valueOfLetter(chord.noteLetter as NonEmptyNoteLetter) + amount;
     if (value > 11) {
         value -= 12;
     }
@@ -215,8 +245,18 @@ export function transposeChord(chord: Chord, amount: number): Chord {
 
 export function toNumericChord(chord: Chord, key: Key): NumericChord {
     let accidental: Accidental = chord.accidental;
-    const keyValue: number = valueOfLetter(key.noteLetter) + valueOfAccidental(key.accidental);
-    const chordValue: number = valueOfLetter(chord.noteLetter) + valueOfAccidental(chord.accidental);
+    if (isEmptyChord(chord) || isEmptyKey(key)) {
+        // if empty chord or empty key, cannot convert to numeric, return empty Numeric Chord ("N/A")
+        return {
+            numeral: emptyNumeral,
+            accidental: "",
+            chordType: "",
+        }
+    }
+
+    // guarateed to be non-empty
+    const keyValue: number = valueOfLetter(key.noteLetter as NonEmptyNoteLetter) + valueOfAccidental(key.accidental);
+    const chordValue: number = valueOfLetter(chord.noteLetter as NonEmptyNoteLetter) + valueOfAccidental(chord.accidental);
     let interval: number = chordValue - keyValue;
     if (interval > 11) {
         interval -= 12;

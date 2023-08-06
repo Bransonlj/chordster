@@ -1,4 +1,4 @@
-import { Chord, Key, emptyChord, defaultKey } from "./chords";
+import { Chord, Key, defaultChord, defaultKey } from "./chords";
 
 export type Lyric = string | undefined;
 export type SectionTitle = string | undefined;
@@ -21,11 +21,12 @@ export type Song = {
     name: SongName;
     artist: Artist;
     capo: Capo;
+    key: Key;
     sections: Section[];
 }
 
 export const defaultChordLyric: ChordLyric = {
-    chord: emptyChord,
+    chord: defaultChord,
     lyric: "",
 }
 
@@ -39,5 +40,6 @@ export const defaultSong: Song = {
     name: "",
     artist: "",
     capo: 0,
+    key: defaultKey,
     sections: [defaultSection],
 }

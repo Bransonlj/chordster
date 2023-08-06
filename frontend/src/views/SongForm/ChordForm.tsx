@@ -37,7 +37,7 @@ function SelectChord({ onChange, chord }: {onChange: any, chord: Chord}) {
             cacheOptions 
             loadOptions={loadOptions} 
             getOptionLabel={(chord: Chord) => chordToString(chord)}
-            getOptionValue={(chord: Chord) => chordToString(chord)}
+            getOptionValue={(chord: Chord) => chordToString(chord)} // not needed?
             onChange={ selectedOption => onChange(selectedOption) }
             defaultValue={ allChords.find((chordOption: Chord) => _.isEqual(chordOption, chord)) }
             placeholder="Enter..."

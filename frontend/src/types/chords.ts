@@ -3,24 +3,34 @@ export const Accidentals = ["b", "", "#"] as const;
 export type Accidental = typeof Accidentals[number];
 
 export const Letters = ["A" , "B" , "C" , "D" , "E" , "F" , "G"] as const;
+export const emptyNoteLetter = "N/A"
 
-export type NoteLetter = typeof Letters[number];
+export type NonEmptyNoteLetter = typeof Letters[number]
+export type EmptyNoteLetter = typeof emptyNoteLetter
 
-export const majorChords = ["maj", "maj7"] as const;
+export type NoteLetter = NonEmptyNoteLetter | EmptyNoteLetter;
+
+// empty type "" represents major chord.
+export const majorChords = ["", "maj7"] as const;
 export const minorChords = ["min", "min7"] as const;
 
 export type ChordType = typeof majorChords[number] | typeof minorChords[number];
 
 export type Chord = {
-    noteLetter: NoteLetter | undefined;
-    accidental: Accidental | undefined;
-    chordType: ChordType | undefined;
+    noteLetter: NoteLetter;
+    accidental: Accidental;
+    chordType: ChordType;
 }
 
 export const numeralUpperCase = ["I", "II", "III", "IV", "V", "VI", "VII"] as const;
 export const numeralLowerCase = ["i", "ii", "iii", "iv", "v", "vi", "vii"] as const;
+export const emptyNumeral = "N/A"
 
-export type Numeral = typeof numeralUpperCase[number] | typeof numeralLowerCase[number];
+export type EmptyNumeral = typeof emptyNumeral;
+
+export type NonEmptyNumeral = typeof numeralUpperCase[number] | typeof numeralLowerCase[number];
+
+export type Numeral = NonEmptyNumeral | EmptyNumeral;
 
 export type NumericChord = {
     numeral: Numeral;
@@ -29,20 +39,21 @@ export type NumericChord = {
 }
 
 export type Key = {
-    noteLetter: NoteLetter | undefined;
-    accidental: Accidental | undefined;
+    noteLetter: NoteLetter;
+    accidental: Accidental;
     // either major or minor key
     isMajor: boolean;
 }
 
-export const emptyChord: Chord = {
-    noteLetter: undefined,
-    accidental: undefined,
-    chordType: undefined,
+// default has alternative meaning of empty
+export const defaultChord: Chord = {
+    noteLetter: emptyNoteLetter,
+    accidental: "",
+    chordType: "",
 }
 
 export const defaultKey: Key = {
-    noteLetter: undefined,
-    accidental: undefined,
+    noteLetter: emptyNoteLetter,
+    accidental: "",
     isMajor: true,
 }

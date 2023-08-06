@@ -1,8 +1,12 @@
-import { useForm, useFieldArray, useWatch, Control, UseFieldArrayRemove, UseFieldArrayInsert } from "react-hook-form";
+import { useForm, useFieldArray, useWatch, Control, UseFieldArrayRemove, UseFieldArrayInsert, Controller } from "react-hook-form";
 import { Section, Song, defaultSection, defaultSong } from "../../types/songs";
 import { SectionForm } from "./SectionForm";
 import _ from "lodash";
+import Select from 'react-select'
 import { isDefaultSection } from "../../utils/songs";
+import SwapGroup from "./SwapGroup";
+import { Key } from "../../types/chords";
+import { getAllKeys, keyToString } from "../../utils/chords";
 
 function CloneSection({ control, insert, sectionIndex }: {control: Control<Song>, insert: UseFieldArrayInsert<Song, "sections">, sectionIndex:number}) {
     const sectionValue: Section = useWatch({
@@ -34,10 +38,15 @@ function DeleteSection({ control, remove, sectionIndex }: {control: Control<Song
     )
   }
 
+  const allKeys: Key[] = getAllKeys();
+
 export default function SongForm() {
 
+    // load song from here if edit mode
+    const loadedSong: Song = defaultSong;
+
     const { control, register, reset, formState: { errors }, handleSubmit } = useForm<Song>({
-        defaultValues: defaultSong,
+        defaultValues: loadedSong,
     });
     const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
         control, // control props comes from useForm (optional: if you are using FormContext)
@@ -67,6 +76,20 @@ export default function SongForm() {
                 {
                     errors.capo && <div>Enter capo</div>
                 }
+                <label>Song Key: </label>
+                <Controller
+                    name={ `key` } // for register
+                    control={ control }
+                    render={ ({ field: { onChange } }) => (
+                        <Select
+                            options={ allKeys }
+                            getOptionLabel={(key: Key) => keyToString(key)}
+                            getOptionValue={(key: Key) => keyToString(key)}
+                            onChange={ selectedOption => onChange(selectedOption) }
+                            defaultValue={ (allKeys.find((key: Key) => _.isEqual(key, loadedSong.key))) }
+                        />
+                    ) }
+                />
                 {   
                     fields.map((field, sectionIndex) => (
                         // important to include key with field's id
@@ -75,8 +98,8 @@ export default function SongForm() {
                             <div className="songForm__sectionButtonContainer">
                             <DeleteSection control={control} remove={remove} sectionIndex={sectionIndex} />
                             <CloneSection control={control} sectionIndex={sectionIndex} insert={insert}></CloneSection>
-                            { sectionIndex >= 1 && <label onClick={() => swap(sectionIndex, sectionIndex - 1)}>Move Up</label> }
-                            { sectionIndex < fields.length - 1 && <label onClick={() => swap(sectionIndex, sectionIndex + 1)}>Move Down</label> }
+                            <SwapGroup isSwapUp index={sectionIndex} swap={swap} />
+                            <SwapGroup isSwapUp={false} index={sectionIndex} swap={swap} length={fields.length} />
                             </div>
                         </div>
                     ))

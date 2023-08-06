@@ -6,6 +6,9 @@ import { Chord, Key } from "../../types/chords";
 import { getAllKeys, keyToString } from "../../utils/chords";
 import _ from "lodash";
 import { isDefaultChordLyric } from "../../utils/songs";
+import SwapGroup from "./SwapGroup";
+import Tippy from "@tippyjs/react";
+import 'tippy.js/dist/tippy.css'; // optional
 
 interface SectionProps {
     section: Section;
@@ -66,7 +69,9 @@ export function SectionForm( { section, sectionIndex, control, register, errors 
             }
         </div>
         <div className="songForm__sectionKey"> 
-            <label>Section key</label>
+            <Tippy content="Section Key will overide Song Key. If you want to use Song Key for this section, select N/A. Numeric chords will not be available if no Song or Section key is selected">
+                <label>Section key</label>
+            </Tippy>
             <Controller
                 name={ `sections.${sectionIndex}.key` } // for register
                 control={ control }
@@ -87,8 +92,8 @@ export function SectionForm( { section, sectionIndex, control, register, errors 
                 <ChordForm chordLyric={field} sectionIndex={sectionIndex} chordIndex={chordIndex} register={register} control={control} />
                 <DeleteChord control={control} remove={remove} sectionIndex={sectionIndex} chordIndex={chordIndex} />
                 <CloneChord control={control} sectionIndex={sectionIndex} chordIndex={chordIndex} insert={insert}></CloneChord>
-                { chordIndex >= 1 && <label onClick={() => swap(chordIndex, chordIndex - 1)}>Up</label> }
-                { chordIndex < fields.length - 1 && <label onClick={() => swap(chordIndex, chordIndex + 1)}>Down</label> }
+                <SwapGroup isSwapUp index={chordIndex} swap={swap} />
+                <SwapGroup isSwapUp={false} index={chordIndex} swap={swap} length={fields.length} />
             </div>
         
         )) }
