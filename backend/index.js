@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require("mongoose");
-const songRouter = require('./routes/songRoutes')
+const songRouter = require('./routes/songs');
+const userRouter = require('./routes/user');
 require('dotenv').config();
 
 console.log(process.env.MONG_URL)
@@ -21,3 +22,4 @@ app.use((req, res, next) => {
 app.use(express.json());
 
 app.use("/api/song", songRouter);
+app.use("/api/user", userRouter);
