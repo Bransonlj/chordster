@@ -6,27 +6,27 @@ function createToken(_id) {
 }
 
 async function loginUser(req, res) {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
 
     try {
-        const user = await Users.login(email, password);
+        const user = await Users.login(username, password);
 
         const token = createToken(user._id);
 
-        res.status(200).json({email, token});
+        res.status(200).json({username, token});
     } catch (error) {
         res.status(400).json({error: error.message});
     }
 }
 
 async function signupUser(req, res) {
-    const { email, password } = req.body;
+    const { username, email, password } = req.body;
     try {
-        const user = await Users.signup(email, password);
+        const user = await Users.signup(username, email, password);
 
         const token = createToken(user._id);
 
-        res.status(200).json({email, token});
+        res.status(200).json({username, token});
     } catch (error) {
         res.status(400).json(error.message);
     }

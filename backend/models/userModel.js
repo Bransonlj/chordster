@@ -3,6 +3,11 @@ const bcrypt = require('bcrypt');
 const validator = require('validator');
 
 const userSchema = new mongoose.Schema({
+    username: {
+        type: String,
+        required: true,
+        unique: true,
+    },
     email: {
         type: String,
         required: true,
@@ -14,15 +19,21 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-userSchema.statics.login = async function(email, password) {
-    if (!email || !password) {
-        throw Error("Email or password cannot be empty")
+/**
+ * Login method using username and password
+ * @param {String} username 
+ * @param {String} password 
+ * @returns The user object
+ */
+userSchema.statics.login = async function(username, password) {
+    if (!username || !password) {
+        throw Error("username or password cannot be empty")
     }
 
-    const user = await this.findOne({ email });
+    const user = await this.findOne({ username });
 
     if (!user) {
-        throw Error("Invalid Email");
+        throw Error("Invalid username");
     }
 
     const match = await bcrypt.compare(password, user.password);
@@ -35,10 +46,10 @@ userSchema.statics.login = async function(email, password) {
 }
 
 // static signup method
-userSchema.statics.signup = async function(email, password) {
+userSchema.statics.signup = async function(username, email, password) {
 
-    if (!email || !password) {
-        throw Error("Email or password cannot be empty")
+    if (!username || !email || !password) {
+        throw Error("Username, Email or password cannot be empty")
     }
 
     if (!validator.isEmail(email)) {
@@ -49,15 +60,20 @@ userSchema.statics.signup = async function(email, password) {
         throw Error("Password must contain uppercase, lowercase, number and special character")
     }
 
-    const exists = await this.findOne({ email });
-    if (exists) {
+    const existsEmail = await this.findOne({ email });
+    const existsUsername = await this.findOne({ username });
+    if (existsEmail) {
         throw Error('Email already in use');
+    } 
+
+    if (existsUsername) {
+        throw Error('Username already in use');
     } 
 
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
 
-    const user = await this.create({ email, password: hash });
+    const user = await this.create({ username, email, password: hash });
 
     return user;
 

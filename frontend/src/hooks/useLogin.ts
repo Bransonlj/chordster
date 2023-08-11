@@ -6,17 +6,17 @@ export function useLogin() {
     const [error, setError] = useState<string>("");
     const { login: loginAuth} = useAuth();
 
-    async function login(email: string, password: string) {
+    async function login(username: string, password: string) {
         setIsloading(true);
         setError("");
 
         const response = await fetch('/api/user/login', {
             method: "POST",
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ email, password }),
+            body: JSON.stringify({ username, password }),
         });
 
-        const jsonResponse = await response.json();
+        const jsonResponse = await response.json(); // get user
 
         console.log("attempting to log in: ", jsonResponse);
         if (response.ok) {

@@ -13,7 +13,7 @@ export default function MainNavBar() {
         <div>
             { user &&
                 <div>
-                    Welcome {user.email}
+                    Welcome {user.username}
                     <button type="button" onClick={handleLogout}>Log Out</button>
                 </div>
             }

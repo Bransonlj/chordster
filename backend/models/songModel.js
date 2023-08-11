@@ -1,6 +1,16 @@
 const mongoose = require("mongoose");
 
 const songSchema = new mongoose.Schema({
+    user: {
+        id: {
+            type: String,
+            required: true,
+        },
+        username: {
+            type: String,
+            required: true,
+        },
+    },
     name: {
         type: String,
         required: true,
