@@ -1,4 +1,5 @@
 import { Chord, Key, defaultChord, defaultKey } from "./chords";
+import { SongUser } from "./user";
 
 export type Lyric = string | undefined;
 export type SectionTitle = string | undefined;
@@ -17,12 +18,29 @@ export type Section = {
     chords: ChordLyric[];
 }
 
+// data type when creating song and sent to API server
 export type Song = {
     name: SongName;
     artist: Artist;
     capo: Capo;
     key: Key;
     sections: Section[];
+}
+
+export type SongEntry = {
+    song: Song;
+    user: SongUser;
+    _id: string;
+}
+
+// summarised data type received from API server
+export type SongEntrySummary = {
+    song: {
+        name: SongName;
+        artist: Artist;
+    };
+    user: SongUser;
+    _id: string;
 }
 
 export const defaultChordLyric: ChordLyric = {

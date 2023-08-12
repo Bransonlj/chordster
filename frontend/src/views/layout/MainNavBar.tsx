@@ -11,6 +11,11 @@ export default function MainNavBar() {
 
     return (
         <div>
+            <nav>
+                <NavLink to="/">Home</NavLink>
+                <NavLink to="/song/list">All songs</NavLink>
+                <NavLink to="/song/create">Add songs</NavLink>
+            </nav>
             { user &&
                 <div>
                     Welcome {user.username}

@@ -1,10 +1,8 @@
-import { useForm, useFieldArray, useWatch, Control, UseFieldArrayRemove, UseFieldArrayInsert, Controller } from "react-hook-form";
-import { Section, Song, defaultSection, defaultSong } from "../../types/songs";
+import { useForm, useFieldArray, Controller } from "react-hook-form";
+import { Song, defaultSection, defaultSong } from "../../types/songs";
 import { SectionForm } from "./SectionForm";
 import _ from "lodash";
 import Select from 'react-select'
-import { isDefaultSection } from "../../utils/songs";
-import SwapGroup from "./SwapGroup";
 import { Key } from "../../types/chords";
 import { getAllKeys, keyToString } from "../../utils/chords";
 import styles from './SongForm.module.scss';
@@ -12,6 +10,7 @@ import styles from './SongForm.module.scss';
 const allKeys: Key[] = getAllKeys();
 
 export default function SongForm() {
+    
 
     // load song from here if edit mode
     const loadedSong: Song = defaultSong;

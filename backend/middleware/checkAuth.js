@@ -1,16 +1,17 @@
 const jwt = require('jsonwebtoken');
 const Users = require('../models/userModel');
 
-// checks authentication using token sent in request and sends 401 error if unauthorized.
-const useAuth = async (req, res, next) => {
+// checks authentication using token sent in request and adds to req, does not set any status code if fail.
+const checkAuth = async (req, res, next) => {
     // authorization = 'Bearer "TOKEN"'
     const { authorization } = req.headers;
     if (!authorization) {
-        return res.status(401).json({error: "unauthorized"})
+        // add to request
+        req.authorized = false
+        return next();
     }
 
     const token = authorization.split(' ')[1]
-
     try {
         // get _id from body of token after verifying with secret key
         const { _id } = jwt.verify(token, process.env.SECRET_KEY)
@@ -19,15 +20,18 @@ const useAuth = async (req, res, next) => {
         const user = await Users.findOne({_id}).select('_id username');
         if (!user) {
             // if token is valid, however user has been deleted.
-            return res.status(401).json({error: "unauthorized token, user does not exist"})
+            req.authorized = false
+            return next();
         }
         req.user = user;
+        req.authorized = true
         next();
     } catch (error) {
         console.log(error)
-        res.status(401).json({error: "unauthorized"})
+        req.authorized = false
+        return next();
     }
 
 }
 
-module.exports = useAuth;
+module.exports = checkAuth;

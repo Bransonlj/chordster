@@ -11,35 +11,17 @@ const songSchema = new mongoose.Schema({
             required: true,
         },
     },
-    name: {
-        type: String,
-        required: true,
-    },
-    artist: {
-        type: String,
-        required: true,
-    },
-    capo: {
-        type: Number,
-        required: true,
-    },
-    key: {
-        noteLetter: {
+    song: {
+        name: {
             type: String,
             required: true,
         },
-        accidental: {
+        artist: {
             type: String,
-            required: false,
-        },
-        isMajor: {
-            type: Boolean,
             required: true,
-        }
-    },
-    sections: [{
-        title: {
-            type: String,
+        },
+        capo: {
+            type: Number,
             required: true,
         },
         key: {
@@ -56,8 +38,12 @@ const songSchema = new mongoose.Schema({
                 required: true,
             }
         },
-        chords: [{
-            chord: {
+        sections: [{
+            title: {
+                type: String,
+                required: true,
+            },
+            key: {
                 noteLetter: {
                     type: String,
                     required: true,
@@ -66,17 +52,33 @@ const songSchema = new mongoose.Schema({
                     type: String,
                     required: false,
                 },
-                chordType: {
-                    type: String,
-                    required: false,
+                isMajor: {
+                    type: Boolean,
+                    required: true,
                 }
             },
-            lyric: {
-                type: String,
-                required: true,
-            },
+            chords: [{
+                chord: {
+                    noteLetter: {
+                        type: String,
+                        required: true,
+                    },
+                    accidental: {
+                        type: String,
+                        required: false,
+                    },
+                    chordType: {
+                        type: String,
+                        required: false,
+                    }
+                },
+                lyric: {
+                    type: String,
+                    required: true,
+                },
+            }]
         }]
-    }]
+    },
 })
 
 module.exports = mongoose.model('songs', songSchema);
