@@ -6,10 +6,8 @@ import Tippy from "@tippyjs/react";
 import 'tippy.js/dist/tippy.css'; // optional
 import styles from './SongDetails.module.scss';
 import { useNavigate, useParams } from "react-router-dom";
-import { SongUser } from "../../types/user";
 import { useAuth } from "../../context/AuthContext";
 import { useFetchSong } from "../../hooks/useFetchSong";
-import { useDeleteSong } from "../../hooks/useDeleteSong";
 
 export default function SongView() {
 
@@ -30,15 +28,24 @@ export default function SongView() {
         } : {}
     );
 
-    const { error: deleteError, isSuccess: deleteSuccess, handleDelete } = useDeleteSong(user);
+    const { error: deleteError, isSuccess: deleteSuccess, isLoading: isDeleting, fetchSong: handleDelete } = useFetchSong(user, `/api/song/protected/${id}`,
+        {
+            method: "DELETE",
+            headers: {
+                'Authorization': `Bearer ${user?.token}`
+            },
+        }, false);
 
-    async function onDelete() {
-        await handleDelete(id);
+    useEffect(() => {
         if (deleteSuccess) {
             alert("successfully deleted")
             navigate("/song/list")
-        } else {
-            alert(deleteError)
+        }
+    }, [deleteSuccess]);
+
+    async function onDelete() {
+        if (confirm("delete song?")) {
+            await handleDelete();
         }
     }
 
@@ -67,7 +74,9 @@ export default function SongView() {
         <div className={styles.mainContainer}>
             <label>Created by: {songUser.username}</label>
             <button type="button" disabled={!isOwner} onClick={() => navigate(`/song/edit/${id}`)}>Edit</button>
-            <button type="button" disabled={!isOwner} onClick={() => onDelete}>Delete</button>
+            <button type="button" disabled={!isOwner} onClick={onDelete}>Delete</button>
+            { isDeleting && <label>Deleting</label> }
+            { deleteError && <label>{ deleteError }</label> }
             <div className={styles.controlContainer}>
                 <label onClick={() => setIsNumericView(!isNumericView)}>Numeric View</label>
                 <div className={styles.transpose}>

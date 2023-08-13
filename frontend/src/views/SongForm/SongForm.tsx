@@ -7,13 +7,18 @@ import { Key } from "../../types/chords";
 import { getAllKeys, keyToString } from "../../utils/chords";
 import styles from './SongForm.module.scss';
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useFetchSong } from "../../hooks/useFetchSong";
 
 const allKeys: Key[] = getAllKeys();
 
 export default function SongForm({song}: {song?: Song}) {
+
+    const {user} = useAuth();
+    const navigate = useNavigate()
+
+    const { error: submitError, isSuccess, isLoading, fetchSong } = useFetchSong(user, '/api/song/protected/', {}, false);
     
     // fix this page, song key is not loading default correctly
     const { control, register, reset, formState: { errors }, handleSubmit } = useForm<Song>({
@@ -31,12 +36,29 @@ export default function SongForm({song}: {song?: Song}) {
         }
     }, [song]) 
 
+    useEffect(() => {
+        if (isSuccess) {
+            alert("successfully added")
+            navigate('/song/list')
+        }
+    }, [isSuccess])
+
     const onSubmit = handleSubmit((data) => {
         alert(JSON.stringify(data));
+        fetchSong({
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {
+                "Content-Type": 'application/json',
+                'Authorization': `Bearer ${user?.token}`,
+            }
+        });
     })
 
     return (
         <div>
+            {isLoading && <label>Loading</label>}
+            {submitError && <label>{submitError}</label>}
             <form onSubmit={onSubmit} className={styles.formContainer}>
                 <label>Song Name: </label>
                 <input {...register("name", { required: true })} />

@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useFetchSong } from "../../hooks/useFetchSong";
 import SongForm from "./SongForm";
@@ -38,6 +38,9 @@ export default function SongEdit() {
     }
 
     return (
-        <SongForm song={songEntry.song}/>
+        <div>
+            <Link to={`/song/view/${id}`}>Cancel</Link>
+            <SongForm song={songEntry.song}/>
+        </div>
     )
 }

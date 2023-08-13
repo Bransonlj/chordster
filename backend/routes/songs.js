@@ -60,7 +60,7 @@ router.delete('/protected/:id', async (req, res) => {
 })
 
 
-router.post('/', (req, res) => {
+router.post('/protected/', (req, res) => {
     const song = req.body;
     const user = {
         id: req.user._id,
