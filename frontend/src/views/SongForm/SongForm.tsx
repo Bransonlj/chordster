@@ -6,23 +6,30 @@ import Select from 'react-select'
 import { Key } from "../../types/chords";
 import { getAllKeys, keyToString } from "../../utils/chords";
 import styles from './SongForm.module.scss';
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { useFetchSong } from "../../hooks/useFetchSong";
 
 const allKeys: Key[] = getAllKeys();
 
-export default function SongForm() {
+export default function SongForm({song}: {song?: Song}) {
     
-
-    // load song from here if edit mode
-    const loadedSong: Song = defaultSong;
-
+    // fix this page, song key is not loading default correctly
     const { control, register, reset, formState: { errors }, handleSubmit } = useForm<Song>({
-        defaultValues: loadedSong,
+        defaultValues: defaultSong,
     });
     const { fields: sections, append: appendSection, remove: removeSection, swap: swapSection, insert: insertSection } = useFieldArray({
         control, // control props comes from useForm (optional: if you are using FormContext)
         name: "sections", // unique name for your Field Array
         rules: { minLength: 1 },
     });
+
+    useEffect(() => {
+        if (song) {
+            reset(song);
+        }
+    }, [song]) 
 
     const onSubmit = handleSubmit((data) => {
         alert(JSON.stringify(data));
@@ -56,7 +63,7 @@ export default function SongForm() {
                             getOptionLabel={(key: Key) => keyToString(key)}
                             getOptionValue={(key: Key) => keyToString(key)}
                             onChange={ selectedOption => onChange(selectedOption) }
-                            defaultValue={ (allKeys.find((key: Key) => _.isEqual(key, loadedSong.key))) }
+                            defaultValue={ song?.key }
                         />
                     ) }
                 />

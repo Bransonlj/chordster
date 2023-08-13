@@ -8,9 +8,7 @@ const useAuth = async (req, res, next) => {
     if (!authorization) {
         return res.status(401).json({error: "unauthorized"})
     }
-
     const token = authorization.split(' ')[1]
-
     try {
         // get _id from body of token after verifying with secret key
         const { _id } = jwt.verify(token, process.env.SECRET_KEY)
@@ -22,9 +20,10 @@ const useAuth = async (req, res, next) => {
             return res.status(401).json({error: "unauthorized token, user does not exist"})
         }
         req.user = user;
+        console.log("Auth successful")
         next();
     } catch (error) {
-        console.log(error)
+        console.log(error.message)
         res.status(401).json({error: "unauthorized"})
     }
 

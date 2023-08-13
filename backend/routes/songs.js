@@ -11,19 +11,11 @@ router.get('/', (req, res) => {
         .catch(err => res.status(400).json(err.message));
 })
 
-router.get('/:id', checkAuth, async (req, res) => {
+// get song details
+router.get('/:id', async (req, res) => {
     const { id } = req.params;
-
     try {
-        const song = await Songs.findOne({ _id: id }).lean();
-        if (req.authorized) {
-            // valid user token, check if song is created by user.
-            song.canEdit = (req.user._id.toString() === song.user.id);
-            console.log(req.user._id.toString(), song.user.id)
-        } else {
-            song.canEdit = false;
-        }
-
+        const song = await Songs.findOne({ _id: id })
         res.status(200).json(song);
     } catch (error) {
         res.status(400).json(error.message)
@@ -31,6 +23,42 @@ router.get('/:id', checkAuth, async (req, res) => {
 })
 
 router.use(useAuth);
+
+// get song details but check authorization first and only return details if authorized.
+router.get('/protected/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const song = await Songs.findById(id);
+        if (song.user.id === req.user._id.toString()) {
+            // song belongs to req user, allow access
+            res.status(200).json(song);
+        } else {
+            res.status(401).json({error: "unauthorized"});
+        }
+    } catch (error) {
+        console.log(error.message)
+        res.status(400).json(error.message)
+    }
+})
+
+router.delete('/protected/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const song = await Songs.findById(id);
+        if (song.user.id === req.user._id.toString()) {
+            // song belongs to req user, allow delete
+            const deletedSong = await Songs.findByIdAndDelete(id);
+            console.log("deleted successfully")
+            res.status(200).json(deletedSong);
+        } else {
+            res.status(401).json({error: "unauthorized"});
+        }
+    } catch (error) {
+        console.log(error.message)
+        res.status(400).json(error.message)
+    }
+})
+
 
 router.post('/', (req, res) => {
     const song = req.body;
@@ -44,5 +72,4 @@ router.post('/', (req, res) => {
         .catch(err => res.status(400).json(err.message));
 
 })
-
 module.exports = router;

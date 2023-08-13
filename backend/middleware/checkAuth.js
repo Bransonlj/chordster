@@ -27,7 +27,7 @@ const checkAuth = async (req, res, next) => {
         req.authorized = true
         next();
     } catch (error) {
-        console.log(error)
+        console.log(error.message)
         req.authorized = false
         return next();
     }

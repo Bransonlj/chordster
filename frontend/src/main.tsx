@@ -10,6 +10,7 @@ import MainNavBar from './views/layout/MainNavBar.tsx'
 import HomePage from './views/Home/HomePage.tsx'
 import SongList from './views/SongList/SongList.tsx'
 import SongView from './views/SongView/SongView.tsx'
+import SongEdit from './views/SongForm/SongEdit.tsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -21,6 +22,7 @@ const router = createBrowserRouter(
         <Route path='list' element={ <SongList /> } />
         <Route path='create' element={ <SongForm /> } />
         <Route path='view/:id' element={ <SongView /> } />
+        <Route path='edit/:id' element={ <SongEdit /> } />
       </Route>
     </Route>
   )

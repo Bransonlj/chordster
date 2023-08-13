@@ -5,72 +5,51 @@ import SectionDetails from "./SectionDetails";
 import Tippy from "@tippyjs/react";
 import 'tippy.js/dist/tippy.css'; // optional
 import styles from './SongDetails.module.scss';
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { SongUser } from "../../types/user";
 import { useAuth } from "../../context/AuthContext";
+import { useFetchSong } from "../../hooks/useFetchSong";
+import { useDeleteSong } from "../../hooks/useDeleteSong";
 
 export default function SongView() {
 
     const { id } = useParams()
-
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string>("");
-    const [song, setSong] = useState<Song>(defaultSong);
-    const [songUser, setSongUser] = useState<SongUser>({username: "", id: ""});
-    const [canEdit, setCanEdit] = useState<boolean>(false);
-    const { user } = useAuth();
-
-    console.log(user)
-
-    useEffect(() => {
-        if (user) {
-            fetch(`/api/song/${id}`, {
-                method: "GET",
-                headers: {
-                    'Authorization': `Bearer ${user.token}`
-                },
-            })
-            .then(res => res.json())
-            .then(res => {
-                setSong(res.song); 
-                setSongUser(res.user); 
-                setIsLoading(false);
-                setCanEdit(res.canEdit);
-            })
-            .catch(err => {setError(err.message); setIsLoading(false);});
-        } else {
-            fetch(`/api/song/${id}`, {
-                method: "GET",
-            })
-            .then(res => res.json())
-            .then(res => {
-                setSong(res.song); 
-                setSongUser(res.user); 
-                setIsLoading(false);
-                setCanEdit(res.canEdit);
-            })
-            .catch(err => {setError(err.message); setIsLoading(false);});
-        }
-    }, [user])
-
-    const handleEdit = () => {
-        // Allow free entry into edit page with :id url params.
-        // only check authorization on put request, when submitting, if it is an edit (url params not null).
-        // send req to API, /:id (PUT), req authorization, and must match song 
-
-        //or dont allow free entry into edit page. Check authorization when entering edit page.
-    }
     // transpose must be between 0 and 11
     const [transpose, setTranspose] = useState<number>(0);
     const [isNumericView, setIsNumericView] = useState<boolean>(false);
 
-    if (isLoading) {
+    const { user } = useAuth();
+    const navigate = useNavigate();
+
+    const { songEntry , error } = useFetchSong(user, `/api/song/${id}`, 
+        user ? {
+            method: "GET",
+            headers: {
+                'Authorization': `Bearer ${user.token}`
+            }
+        } : {}
+    );
+
+    const { error: deleteError, isSuccess: deleteSuccess, handleDelete } = useDeleteSong(user);
+
+    async function onDelete() {
+        await handleDelete(id);
+        if (deleteSuccess) {
+            alert("successfully deleted")
+            navigate("/song/list")
+        } else {
+            alert(deleteError)
+        }
+    }
+
+    if (!songEntry) {
         return (
             <div>
                 Loading
             </div>
         )
     }
+
     if (error) {
         return (
             <div>
@@ -79,10 +58,16 @@ export default function SongView() {
         )
     }
 
+    const song = songEntry.song;
+    const songUser = songEntry.user
+    // soft check for edit button. Do secure check with token auth when rendering edit page.
+    const isOwner: boolean = songUser.username === user?.username;
+
     return (
         <div className={styles.mainContainer}>
             <label>Created by: {songUser.username}</label>
-            <button type="button" disabled={!canEdit}>Edit {canEdit ? "yes" : "no"}</button>
+            <button type="button" disabled={!isOwner} onClick={() => navigate(`/song/edit/${id}`)}>Edit</button>
+            <button type="button" disabled={!isOwner} onClick={() => onDelete}>Delete</button>
             <div className={styles.controlContainer}>
                 <label onClick={() => setIsNumericView(!isNumericView)}>Numeric View</label>
                 <div className={styles.transpose}>
