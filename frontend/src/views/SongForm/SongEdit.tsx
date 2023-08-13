@@ -40,7 +40,7 @@ export default function SongEdit() {
     return (
         <div>
             <Link to={`/song/view/${id}`}>Cancel</Link>
-            <SongForm song={songEntry.song}/>
+            <SongForm song={songEntry.song} songId={id}/>
         </div>
     )
 }

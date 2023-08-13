@@ -59,7 +59,6 @@ router.delete('/protected/:id', async (req, res) => {
     }
 })
 
-
 router.post('/protected/', (req, res) => {
     const song = req.body;
     const user = {
@@ -71,5 +70,31 @@ router.post('/protected/', (req, res) => {
         .then(() => res.status(200).json("success!"))
         .catch(err => res.status(400).json(err.message));
 
+})
+
+router.put('/protected/:id', async (req, res) => {
+    const { id } = req.params;
+    const song = req.body;
+    const user = {
+        id: req.user._id,
+        username: req.user.username,
+    };
+    const SongEntry = {song, user};
+    
+    try {
+        // verify if user id is owner of song
+        owner = await Songs.findById(id).select("user.id");
+        if (user.id.toString() === owner.user.id.toString()) {
+            await Songs.findByIdAndUpdate(id, SongEntry)
+            console.log("successfully updated!")
+            res.status(200).json("success!")
+        } else {
+            console.log("unauthorized")
+            res.status(401).json({error: "unauthorized"});
+        }
+    } catch (error) {
+        console.log(error.message)
+        res.status(400).json(error.message)
+    }
 })
 module.exports = router;

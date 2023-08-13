@@ -13,14 +13,13 @@ import { useFetchSong } from "../../hooks/useFetchSong";
 
 const allKeys: Key[] = getAllKeys();
 
-export default function SongForm({song}: {song?: Song}) {
+export default function SongForm({song, songId}: {song?: Song, songId?: string}) {
 
+    const isEdit = !!songId;
     const {user} = useAuth();
     const navigate = useNavigate()
 
-    const { error: submitError, isSuccess, isLoading, fetchSong } = useFetchSong(user, '/api/song/protected/', {}, false);
-    
-    // fix this page, song key is not loading default correctly
+    const { error: submitError, isSuccess, isLoading, fetchSong } = useFetchSong(user, `/api/song/protected/${songId}`, {}, false);
     const { control, register, reset, formState: { errors }, handleSubmit } = useForm<Song>({
         defaultValues: defaultSong,
     });
@@ -38,15 +37,15 @@ export default function SongForm({song}: {song?: Song}) {
 
     useEffect(() => {
         if (isSuccess) {
-            alert("successfully added")
+            alert(isEdit ? "successfully updated" : "successfully added")
             navigate('/song/list')
         }
     }, [isSuccess])
 
     const onSubmit = handleSubmit((data) => {
-        alert(JSON.stringify(data));
+        const method = isEdit ? "PUT" : "POST";
         fetchSong({
-            method: "POST",
+            method: method,
             body: JSON.stringify(data),
             headers: {
                 "Content-Type": 'application/json',
@@ -114,7 +113,7 @@ export default function SongForm({song}: {song?: Song}) {
                 </div>
                 <div>
                     <label onClick={ () => appendSection(defaultSection) }>Add Section</label>
-                    <input type="submit"/>
+                    <button type="submit">{isEdit ? "Save" : "Submit"}</button>
                 </div>
 
             </form>
