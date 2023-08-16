@@ -79,6 +79,30 @@ const songSchema = new mongoose.Schema({
             }]
         }]
     },
+    ratings: [{
+        score: {
+            type:Number,
+            required: true,
+        },
+        user: {
+            id: {
+                type: String,
+                required: true,
+            },
+            username: {
+                type: String,
+                required: true,
+            },
+        },
+        comment: {
+            type: String,
+            required: false,
+        },
+    }],
+    averageScore: {
+        type: Number,
+        default: 0,
+    }
 })
 
 module.exports = mongoose.model('songs', songSchema);

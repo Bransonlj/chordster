@@ -1,4 +1,5 @@
 import { Chord, Key, defaultChord, defaultKey } from "./chords";
+import { Rating } from "./rating";
 import { SongUser } from "./user";
 
 export type Lyric = string | undefined;
@@ -30,6 +31,8 @@ export type Song = {
 export type SongEntry = {
     song: Song;
     user: SongUser;
+    ratings: [Rating];
+    averageScore: number;
     _id: string;
 }
 
@@ -40,6 +43,7 @@ export type SongEntrySummary = {
         artist: Artist;
     };
     user: SongUser;
+    averageScore: number;
     _id: string;
 }
 

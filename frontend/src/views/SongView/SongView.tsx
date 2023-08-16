@@ -8,6 +8,7 @@ import styles from './SongDetails.module.scss';
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useFetchSong } from "../../hooks/useFetchSong";
+import SongRatings from "./SongRatings";
 
 export default function SongView() {
 
@@ -28,13 +29,16 @@ export default function SongView() {
         } : {}
     );
 
-    const { error: deleteError, isSuccess: deleteSuccess, isLoading: isDeleting, fetchSong: handleDelete } = useFetchSong(user, `/api/song/protected/${id}`,
+    const { error: deleteError, isSuccess: deleteSuccess, isLoading: isDeleting, fetchSong: handleDelete } = useFetchSong(
+        user, 
+        `/api/song/protected/${id}`,
         {
             method: "DELETE",
             headers: {
                 'Authorization': `Bearer ${user?.token}`
             },
-        }, false);
+        }, 
+        false);
 
     useEffect(() => {
         if (deleteSuccess) {
@@ -73,6 +77,7 @@ export default function SongView() {
     return (
         <div className={styles.mainContainer}>
             <label>Created by: {songUser.username}</label>
+            <label>Rating: { songEntry.averageScore }</label>
             <button type="button" disabled={!isOwner} onClick={() => navigate(`/song/edit/${id}`)}>Edit</button>
             <button type="button" disabled={!isOwner} onClick={onDelete}>Delete</button>
             { isDeleting && <label>Deleting</label> }
@@ -107,6 +112,8 @@ export default function SongView() {
                     ))
                 }
             </div>
+            <SongRatings songEntry={songEntry}/>
+    
         </div>
 
     )

@@ -6,6 +6,7 @@ export type User = {
 }
 
 // SongUser is user info obtained from database.
+// TODO rename to userAccount
 export type SongUser = {
     username: string;
     id: string;

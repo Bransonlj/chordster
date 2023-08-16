@@ -37,6 +37,7 @@ export default function SongList() {
                         <label>{songEntry.song.name}</label>
                         <label>{songEntry.song.artist}</label>
                         <label>{songEntry.user.username}</label>
+                        <label>score: {songEntry.averageScore}</label>
                         <Link to={`/song/view/${songEntry._id}`}>view</Link>
                     </div>
                 ))

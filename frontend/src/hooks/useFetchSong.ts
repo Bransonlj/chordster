@@ -17,13 +17,6 @@ export function useFetchSong(user: User | null, input: RequestInfo | URL, defaul
             const res = await fetch(input, customParam ?? defaultParams);
             const data = await res.json()
             if (!res.ok) {
-                throw Error(data.error)
-                console.log(data.error)
-                setIsLoading(false)
-                setError(data.error);
-                setSongEntry(undefined);
-                setIsSuccess(false)
-                return;
             } 
             console.log("successfully fetched")
             setIsLoading(false)

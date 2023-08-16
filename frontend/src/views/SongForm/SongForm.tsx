@@ -19,7 +19,7 @@ export default function SongForm({song, songId}: {song?: Song, songId?: string})
     const {user} = useAuth();
     const navigate = useNavigate()
 
-    const { error: submitError, isSuccess, isLoading, fetchSong } = useFetchSong(user, `/api/song/protected/${songId}`, {}, false);
+    const { error: submitError, isSuccess, isLoading, fetchSong } = useFetchSong(user, `/api/song/protected/${songId ?? ''}`, {}, false);
     const { control, register, reset, formState: { errors }, handleSubmit } = useForm<Song>({
         defaultValues: defaultSong,
     });
