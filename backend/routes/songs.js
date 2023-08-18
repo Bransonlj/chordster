@@ -6,13 +6,39 @@ const router = express.Router();
 
 // get all songs, no authentication
 router.get('/', (req, res) => {
-    var { sortBy, order } = req.query;
-    if (sortBy !== "averageScore") {
-        sortBy = `song.${sortBy}`;
+    var { sortBy, order, filterBy, filter: filterString } = req.query;
+    switch (sortBy) {
+        case "name":
+        case "artist":
+            sortBy = `song.${sortBy}`;
+            break;
+        case "averageScore":
+            break;
+        default:
+            sortBy = "song.name"; // default to sorting by songname
     }
-    Songs.find().select("_id user song.name song.artist averageScore").sort([[sortBy, order]]) // condense to summarised version
-        .then(result => res.status(200).json(result))
-        .catch(err => res.status(400).json(err.message));
+    switch (filterBy) {
+        case "name":
+        case "artist":
+            filterBy = `song.${filterBy}`;
+            break;
+        case "username":
+            filterBy = `user.${filterBy}`;
+            break;
+        default:
+            filterBy = "song.name"; // default to filtering songname
+    }
+    const filter = {}
+    filter[filterBy] = { "$regex": filterString, "$options": "i" };
+    Songs.find(filter).select("_id user song.name song.artist averageScore").sort([[sortBy, order]]) // condense to summarised version
+        .then(result => {
+            console.log("success!");
+            res.status(200).json(result);
+        })
+        .catch(err => {
+            console.log(err.message)
+            res.status(400).json(err.message);
+        });
 })
 
 // get song details
