@@ -45,6 +45,7 @@ export type SongEntrySummary = {
     user: SongUser;
     averageScore: number;
     _id: string;
+    totalRatings: number;
 }
 
 export const defaultChordLyric: ChordLyric = {
