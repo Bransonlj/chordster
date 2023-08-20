@@ -74,7 +74,7 @@ const songSchema = new mongoose.Schema({
                 },
                 lyric: {
                     type: String,
-                    required: true,
+                    required: false,
                 },
             }]
         }]

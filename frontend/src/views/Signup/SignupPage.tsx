@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { useSignup } from '../../hooks/useSignup';
+import { useNavigate } from 'react-router-dom';
 
 export default function SignupPage() {
     const [email, setEmail] = useState<string>("");
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const { signup, error, isLoading } = useSignup();
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -15,10 +17,9 @@ export default function SignupPage() {
         if (success) {
             // redirect to success page
             console.log("successfully created account", username, email, password);
+            navigate("/login");
         };
     }
-
-
 
     return (
         <div>

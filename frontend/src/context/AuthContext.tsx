@@ -1,5 +1,12 @@
 import { createContext, useReducer, useContext, useEffect } from "react";
 import { User } from "../types/user";
+import jwtDecode from "jwt-decode";
+
+type JWToken = {
+    exp: number;
+    iat: number;
+    _id: string;
+}
 
 type UseAuthContextType = {
     user: User | null;
@@ -58,9 +65,17 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
     }
 
     useEffect(() => {
-        const user = (localStorage.getItem('user'));
-        if (user) {
-            login(JSON.parse(user));
+        const userString = (localStorage.getItem('user'));
+        if (userString) {
+            const user: User = JSON.parse(userString);
+            if ((jwtDecode(user.token) as JWToken).exp * 1000 < Date.now()) {
+                // jtw expired
+                localStorage.removeItem('user');
+                alert("login session has expired");
+                logout()
+            } else {
+                login(user);
+            }
         }
     }, [])
     

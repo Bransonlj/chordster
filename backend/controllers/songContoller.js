@@ -5,18 +5,20 @@ const Songs = require("../models/songModel");
  * @param {*} req 
  * @param {*} res 
  */
-const getSongs = (req, res) => {
-    var { sortBy, order, filterBy, filter: filterString } = req.query;
+const getSongs = async (req, res) => {
+    var { sortBy, order, filterBy, filter: filterString, limit, offset } = req.query;
     switch (sortBy) {
         case "name":
         case "artist":
             sortBy = `song.${sortBy}`;
             break;
         case "averageScore":
+        case "totalRatings":
             break;
         default:
             sortBy = "song.name"; // default to sorting by songname
     }
+
     switch (filterBy) {
         case "name":
         case "artist":
@@ -28,36 +30,64 @@ const getSongs = (req, res) => {
         default:
             filterBy = "song.name"; // default to filtering songname
     }
+
+    if (isNaN(parseInt(limit))) {
+        limit = 20; // default limit to 20
+    } else {
+        limit = parseInt(limit)
+    }
+
+    if (isNaN(parseInt(offset))) {
+        offset = 0; // default offset to 0
+    } else {
+        offset = parseInt(offset)
+    }
     const filter = {}
     filter[filterBy] = { "$regex": filterString, "$options": "i" };
-    Songs.aggregate([
-            {
-                $match: filter
-            },
-            {
-                $project: {
-                    _id: 1,
-                    user: 1,
-                    'song.name': 1,
-                    'song.artist': 1,
-                    averageScore: 1,
-                    totalRatings: { $size: '$ratings' },
-                }
-            },
-            {
-                $sort: {
-                    [sortBy]: (order === "desc" ? -1 : 1),
-                },
+    const aggregationPipeline = [{
+            $match: filter
+        }, {
+            $project: {
+                _id: 1,
+                user: 1,
+                'song.name': 1,
+                'song.artist': 1,
+                averageScore: 1,
+                totalRatings: { $size: '$ratings' },
             }
-        ])
-        .then(result => {
-            console.log("success!");
-            res.status(200).json(result);
-        })
-        .catch(err => {
-            console.log(err.message)
-            res.status(400).json(err.message);
-        });
+        }, {
+            $sort: {
+                [sortBy]: (order === "desc" ? -1 : 1),
+            },
+    },]
+    try {
+        const allSongs = await Songs.aggregate(aggregationPipeline);
+        const count = allSongs.length;
+
+        const selectedSongs = await Songs.aggregate(aggregationPipeline)
+            .collation({ locale: 'en', strength: 2 }) 
+            .skip(offset)
+            .limit(limit);
+        const nextOffset = offset + limit < count ? offset + limit : null;
+        const previousOffset = offset <= 0 
+            ? null
+            : offset - limit >= 0
+                ? offset - limit
+                : 0;
+        const data = {
+            count: count,
+            next: nextOffset ? `/api/song/?sortBy=${sortBy}&order=${order}&filterBy=${filterBy}&filter=${filterString}&limit=${limit}&offset=${nextOffset}` 
+                : null,
+            previous: previousOffset ? `/api/song/?sortBy=${sortBy}&order=${order}&filterBy=${filterBy}&filter=${filterString}&limit=${limit}&offset=${previousOffset}` 
+            : null,
+            results: selectedSongs,
+        }
+        console.log("success!");
+        res.status(200).json(data);
+    } catch (err) {
+        console.log(err.message)
+        res.status(400).json(err.message);
+    }
 }
 
 /**

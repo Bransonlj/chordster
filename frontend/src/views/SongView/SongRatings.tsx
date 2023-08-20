@@ -8,32 +8,59 @@ export default function SongRatings({songEntry}: {songEntry: SongEntry}) {
 
     const [ratingScore, setRatingScore] = useState<number>(0);
     const [ratingComment, setRatingComment] = useState<string>("");
+    const [isEditRating, setIsEditRating] = useState<boolean>(true);
     const [hasRated, setHasRated] = useState<boolean>(false);
-    const [isEditRating, setIsEditRating] = useState<boolean>(false);
 
     const { id } = useParams();
     const { user } = useAuth();
+    const { error, isLoading, isSuccess, fetchSong: handleRating } = useFetchSong(
+        user, 
+        `/api/song/protected/rate/${id}`,
+        {}, 
+        false
+    );
+
+    const { error: deleteError, isSuccess: isDeleteSuccess, fetchSong: handleDelete } = useFetchSong(
+        user,
+        `/api/song/protected/rate/${id}`,
+        {
+            method: "DELETE",
+            headers: {
+                'Authorization': `Bearer ${user?.token}`,
+            }
+        },
+        false
+    );
 
     useEffect(() => {
         if (user) {
             // load user's current rating
             const userRating = songEntry?.ratings.filter(rating => rating.user.username === user.username)[0];
-            const hasRated = !!userRating;
-            if (hasRated) {
+            if (!!userRating) {
+                // user has already rated.
                 setHasRated(true);
-                setIsEditRating(false)
+                setIsEditRating(false);
                 setRatingScore(userRating.score);
                 setRatingComment(userRating.comment ?? "");
             }
         }
     }, [songEntry, user]);
 
-    const { error, isLoading, fetchSong: handleRating } = useFetchSong(
-        user, 
-        `/api/song/protected/rate/${id}`,
-        {}, 
-        false);
+    useEffect(() => {
+        if (isSuccess) {
+            setIsEditRating(false);
+            setHasRated(true);
+        }
+    }, [isSuccess])
 
+    useEffect(() => {
+        if (isDeleteSuccess) {
+            setRatingScore(0);
+            setRatingComment("");
+            setHasRated(false)
+            setIsEditRating(true);
+        }
+    }, [isDeleteSuccess])
 
     async function onRate(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -50,29 +77,18 @@ export default function SongRatings({songEntry}: {songEntry: SongEntry}) {
                 'Authorization': `Bearer ${user?.token}`,
             }
         });
-        setHasRated(true);
-        setIsEditRating(false);
     }
 
     async function onDelete() {
         if (confirm("delete rating?")) {
-            await handleRating({
-                method: "DELETE",
-                headers: {
-                    'Authorization': `Bearer ${user?.token}`,
-                }
-            })
-
-            setHasRated(false);
-            setRatingScore(0);
-            setRatingComment("");
+            await handleDelete()
         }
     }
     
     return (
         <div>
             {
-                !(!isEditRating && hasRated) && <div>
+                isEditRating && <div>
                     <form onSubmit={(e) => onRate(e)}>
                         <label>Your review</label>
                         <input type="number" 
@@ -80,7 +96,7 @@ export default function SongRatings({songEntry}: {songEntry: SongEntry}) {
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRatingScore(Number(e.target.value))} />
                         <input value={ratingComment} 
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRatingComment(e.target.value)} />
-                        { hasRated && <button type="button" onClick={() => setIsEditRating(false)}>cancel</button> }
+                        {hasRated && <button type="button" onClick={() => setIsEditRating(false)}>cancel</button>}
                         <button type="submit">rate</button>
                     </form>
                     { error && <label>Error: {error}</label> }
@@ -88,12 +104,13 @@ export default function SongRatings({songEntry}: {songEntry: SongEntry}) {
                 </div>
             }
             { 
-                !isEditRating && hasRated && <div>
+                !isEditRating && <div>
                     <label>{ user?.username }</label>
                     <label>{ ratingScore }</label>
                     <label>{ ratingComment }</label>
                     <label onClick={() => setIsEditRating(true)}>edit</label>
                     <label onClick={ onDelete }>Delete</label>
+                    { deleteError && <label>Error: {deleteError}</label> }
                 </div>
             }
             {

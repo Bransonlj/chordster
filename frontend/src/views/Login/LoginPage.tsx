@@ -1,15 +1,20 @@
 import { useState } from 'react'
 import { useLogin } from '../../hooks/useLogin';
+import { useNavigate } from 'react-router-dom';
 
 export default function LoginPage() {
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
+    const navigate = useNavigate()
     const { login, isLoading, error } = useLogin();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        await login(username, password);
+        const isSuccess = await login(username, password);
+        if (isSuccess) {
+            navigate("/");
+        }
     }
 
     return (
