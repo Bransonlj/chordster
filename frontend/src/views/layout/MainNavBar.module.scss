@@ -1,0 +1,23 @@
+.mainContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+
+
+}
+.navContainer {
+    a {
+        margin: 10px
+    }
+}
+
+.userContainer {
+    label, a {
+        margin: 10px;
+    }
+}
+
+.content {
+    display: flex;
+    justify-content: center
+}

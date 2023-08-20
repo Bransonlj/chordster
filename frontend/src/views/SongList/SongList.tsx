@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import { Song, SongEntrySummary } from '../../types/songs';
 import { Link } from 'react-router-dom';
 import RadioButton from '../Components/RadioButton';
+import styles from './SongList.module.scss';
+import SongTable from './SongTable';
 
 // naming corresponds to API model fields.
 
@@ -77,14 +79,15 @@ export default function SongList() {
     }
     
     return (
-        <div>
-            <label>query: {`/api/song/?sortBy=${sortBy}&order=${isDescendingSort ? "desc" : "asc"}&filterBy=${filterBy}&filter=${searchFilter}&limit=${searchLimit}&offset=${(pageNumber - 1) * searchLimit}`}</label>
+        <div className={styles.mainContainer}>
+            <label>querydebug: {`/api/song/?sortBy=${sortBy}&order=${isDescendingSort ? "desc" : "asc"}&filterBy=${filterBy}&filter=${searchFilter}&limit=${searchLimit}&offset=${(pageNumber - 1) * searchLimit}`}</label>
             <div>
                 <label>Search: </label>
                 <input value={searchFilter} onChange={(e) => setSearchFilter(e.target.value)} />
                 <button type='button' onClick={fetchSearch}>Search</button>
-                <label>Filter by:</label>
-                <div>
+                
+                <div className={styles.filterContainer}>
+                    <label>Filter by:</label>
                     <RadioButton 
                         filterByName='name'
                         filterByState={filterBy}
@@ -119,34 +122,8 @@ export default function SongList() {
                 </select>
             </div>
             {songs && 
-                
                 <div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>artist</th>
-                                <th>rating</th>
-                                <th>total</th>
-                                <th>Created by:</th>
-                                <th>link</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            { songs.results.map((songEntry: SongEntrySummary, index: number) => (
-                                    <tr key={index}>
-                                        <td>{songEntry.song.name}</td>
-                                        <td>{songEntry.song.artist}</td>
-                                        <td>{songEntry.averageScore}</td>
-                                        <td>{songEntry.totalRatings}</td>
-                                        <td>{songEntry.user.username}</td>
-                                        <td><Link to={`/song/view/${songEntry._id}`}>view</Link></td>
-                                    </tr>
-                                ))
-                            }
-                        </tbody>
-                    </table>
-
+                    <SongTable songs={songs.results} />
                     <div>
                         <label>page: </label>
                         {new Array(Math.floor(songs.count / searchLimit) + (songs.count % searchLimit === 0 ? 0 : 1)).fill(0).map((x, index) => (
