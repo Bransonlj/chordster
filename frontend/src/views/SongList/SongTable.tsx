@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
 import { SongEntrySummary } from "../../types/songs";
+import styles from './SongTable.module.scss'
 
 export default function SongTable({ songs }: {songs: SongEntrySummary[]}) {
     return (
-        <table>
+        <table className={styles.table}>
             <thead>
                 <tr>
                     <th>Name</th>

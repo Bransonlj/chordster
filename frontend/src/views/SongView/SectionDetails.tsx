@@ -15,8 +15,8 @@ export default function SectionDetails({ section, transpose, songKey, isNumericV
     return (
         <div className={styles.mainContainer}>
             <div className={styles.sectionDetailsContainer}>
-                <label>{section.title}</label>
-                <label>key: {keyToString(section.key)}</label>
+                <span className={styles.sectionTitle}>{section.title}</span>
+                <span className={styles.sectionKey}>key: {keyToString(section.key)}</span>
             </div>
             <div className={styles.chordsContainer}>
                 {

@@ -3,6 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useParams } from "react-router-dom";
 import { SongEntry } from "../../types/songs";
 import { useFetchSong } from "../../hooks/useFetchSong";
+import styles from './SongRating.module.scss';
 
 export default function SongRatings({songEntry}: {songEntry: SongEntry}) {
 
@@ -86,42 +87,56 @@ export default function SongRatings({songEntry}: {songEntry: SongEntry}) {
     }
     
     return (
-        <div>
+        <div className={styles.mainContainer}>
             {
                 isEditRating && <div>
-                    <form onSubmit={(e) => onRate(e)}>
+                    <form 
+                        className={styles.ratingForm}
+                        onSubmit={(e) => onRate(e)}>
                         <label>Your review</label>
                         <input type="number" 
                             value={ratingScore} 
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRatingScore(Number(e.target.value))} />
-                        <input value={ratingComment} 
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRatingComment(e.target.value)} />
-                        {hasRated && <button type="button" onClick={() => setIsEditRating(false)}>cancel</button>}
-                        <button type="submit">rate</button>
+                        <textarea 
+                            placeholder="Write a comment..."
+                            value={ratingComment} 
+                            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setRatingComment(e.target.value)} />
+                        <div className={styles.buttonContainer}>
+                            {hasRated && <button type="button" onClick={() => setIsEditRating(false)}>cancel</button>}
+                            <button type="submit">rate</button>
+                        </div>
                     </form>
                     { error && <label>Error: {error}</label> }
                     { isLoading && <label>loading</label> }
                 </div>
             }
             { 
-                !isEditRating && <div>
-                    <label>{ user?.username }</label>
-                    <label>{ ratingScore }</label>
-                    <label>{ ratingComment }</label>
-                    <label onClick={() => setIsEditRating(true)}>edit</label>
-                    <label onClick={ onDelete }>Delete</label>
-                    { deleteError && <label>Error: {deleteError}</label> }
+                !isEditRating && <div className={styles.userRating}>
+                    <div className={styles.ratingContainer}>
+                        <span>{ ratingScore }</span>
+                        <span>{ ratingComment }</span>
+                        <span className={styles.username}>{ user?.username }</span>
+                    </div>
+                    <div className={styles.buttons}>
+                        <span onClick={() => setIsEditRating(true)}>edit</span>
+                        <span onClick={ onDelete }>Delete</span>
+                    </div>
+                    { deleteError && <span>Error: {deleteError}</span> }
                 </div>
             }
+            <div>
             {
                 songEntry.ratings.filter(rating => !!rating.comment && rating.user.username != user?.username).map((rating, index) => (
-                    <div key={index}>
-                        <label>{ rating.user.username }</label>
-                        <label>{ rating.score }</label>
-                        <label>{ rating.comment }</label>
+                    <div key={index} className={styles.ratingContainer}>
+                        <span>{ rating.score } stars</span>
+                        <span>{ rating.comment }</span>
+                        <span className={styles.username}>{ rating.user.username }</span>
+
+
                     </div>
                 ))
             }
+            </div>
         </div>
     )
 }

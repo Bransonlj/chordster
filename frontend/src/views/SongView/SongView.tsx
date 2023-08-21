@@ -4,11 +4,11 @@ import { keyToString } from "../../utils/chords";
 import SectionDetails from "./SectionDetails";
 import Tippy from "@tippyjs/react";
 import 'tippy.js/dist/tippy.css'; // optional
-import styles from './SongDetails.module.scss';
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useFetchSong } from "../../hooks/useFetchSong";
 import SongRatings from "./SongRatings";
+import styles from './SongView.module.scss'
 
 export default function SongView() {
 
@@ -76,32 +76,31 @@ export default function SongView() {
 
     return (
         <div className={styles.mainContainer}>
-            <label>Created by: {songUser.username}</label>
-            <label>Rating: { songEntry.averageScore }</label>
-            <button type="button" disabled={!isOwner} onClick={() => navigate(`/song/edit/${id}`)}>Edit</button>
-            <button type="button" disabled={!isOwner} onClick={onDelete}>Delete</button>
-            { isDeleting && <label>Deleting</label> }
-            { deleteError && <label>{ deleteError }</label> }
-            <div className={styles.controlContainer}>
-                <label onClick={() => setIsNumericView(!isNumericView)}>Numeric View</label>
-                <div className={styles.transpose}>
-                    <label onClick={() => setTranspose(transpose - 1 < 0 ? 11 : transpose - 1)}>-</label>
-                    <label>transpose {transpose}</label>
-                    <label onClick={() => setTranspose(transpose + 1 > 11 ? 0 : transpose + 1)}>+</label>
+            <div className={styles.infoContainer}>
+                <div className={styles.metaContainer}>
+                    <div className={styles.infoHeader}>
+                        <span className={styles.songName}>{song.name}</span>
+                        <span className={styles.artist}>by: <strong>{song.artist}</strong></span>
+                    </div>
+                    <span>Created by: {songUser.username}</span>
+                    <span>Rating: { songEntry.averageScore }</span>
+                    <span>key: {keyToString(song.key)}</span>
+                    <div className={styles.capoContainer}>
+                        <span>capo: {song.capo}</span>
+                        {
+                            transpose !== 0 &&  <Tippy content="To play in original Key">
+                                <span>capo: { song.capo - transpose < 0 ? song.capo - transpose + 12 : song.capo - transpose }</span>
+                            </Tippy>
+                        }
+                    </div>
                 </div>
-            </div>
-            <div className={styles.songDetailsContainer}>
-                <label>{song.name}</label>
-                <label>{song.artist}</label>
-                <label>key: {keyToString(song.key)}</label>
-                <div className={styles.capoContainer}>
-                    <label>capo: {song.capo}</label>
-                    {
-                        transpose !== 0 &&  <Tippy content="To play in original Key">
-                            <label>capo: { song.capo - transpose < 0 ? song.capo - transpose + 12 : song.capo - transpose }</label>
-                        </Tippy>
-                    }
+                <div>
+                    <button type="button" disabled={!isOwner} onClick={() => navigate(`/song/edit/${id}`)}>Edit</button>
+                    <button type="button" disabled={!isOwner} onClick={onDelete}>Delete</button>
+                    { isDeleting && <span>Deleting</span> }
+                    { deleteError && <span>{ deleteError }</span> }
                 </div>
+
             </div>
             <div className={styles.sectionsContainer}>
                 {
@@ -112,8 +111,24 @@ export default function SongView() {
                     ))
                 }
             </div>
+            <div className={styles.floatingContainer}>
+                <div className={styles.controlContainer}>
+                    <span 
+                        className={`${styles.numericView} ${isNumericView ? styles.selected : styles.notSelected}`}
+                        onClick={() => setIsNumericView(!isNumericView)}>Numeric View</span>
+                    <div className={styles.transposeContainer}>
+                        <span>Transpose: </span>
+                        <span className={styles.transposeButton} 
+                            onClick={() => setTranspose(transpose - 1 < 0 ? 11 : transpose - 1)}
+                            >-</span>
+                        <span>{transpose}</span>
+                        <span className={styles.transposeButton} 
+                            onClick={() => setTranspose(transpose + 1 > 11 ? 0 : transpose + 1)}
+                            >+</span>
+                    </div>
+                </div>
+            </div>
             <SongRatings songEntry={songEntry}/>
-    
         </div>
 
     )

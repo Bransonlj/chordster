@@ -4,7 +4,44 @@
     align-items: center;
 }
 
+.paramsContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
 .filterContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.filterOption {
+    border: 1px solid black;
+    
+    &:hover {
+        cursor: pointer;
+    }
+
+    &.notSelected {
+        &:hover {
+            background-color: blue;
+        }
+    }
+
+    &.selected {
+        background-color: aqua;
+    }
+}
+
+.pageController {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.searchLimit {
     display: flex;
     flex-direction: row;
 }

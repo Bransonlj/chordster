@@ -1,10 +1,24 @@
 .mainContainer {
-    border: 1px solid black;
+    width: 70%;
 }
+
+
 
 .sectionDetailsContainer {
     display: flex;
     flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px black solid;
+}
+
+.sectionTitle {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.sectionKey {
+
 }
 
 .chordsContainer {

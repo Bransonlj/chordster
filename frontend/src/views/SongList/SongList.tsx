@@ -9,9 +9,10 @@ import { useSearchParams } from 'react-router-dom';
 // naming corresponds to API model fields.
 
 const sortByOptions = ["name", "artist", "averageScore", "totalRatings"] as const;
-
 type SortBy = typeof sortByOptions[number];
-export type FilterBy = "name" | "artist" | "username";
+
+const filterByOptions = ["name" , "artist" , "username"] as const;
+export type FilterBy = typeof filterByOptions[number];
 
 type GetSongsData = {
     count: number;
@@ -37,7 +38,6 @@ export default function SongList() {
     const searchFilter = searchParams.get("search") ?? "";
 
     const fetchSearch = () => {
-        console.log("fetching")
         setSongs(undefined);
         setIsLoading(true)
         fetch(`/api/song/?sortBy=${sortBy}&order=${isDescendingSort ? "desc" : "asc"}&filterBy=${filterBy}&filter=${searchFilter}&limit=${searchLimit}&offset=${(pageNumber - 1) * searchLimit}`, { 
@@ -63,7 +63,10 @@ export default function SongList() {
                 setSortBy(sortByOption);
             }
         })
+    }
 
+    const getNumberPages = (totalSongs: number): number => {
+        return Math.floor(totalSongs / searchLimit) + (totalSongs % searchLimit === 0 ? 0 : 1)
     }
 
     if (isLoading) {
@@ -83,63 +86,68 @@ export default function SongList() {
     
     return (
         <div className={styles.mainContainer}>
-            <label>querydebug: {`/api/song/?sortBy=${sortBy}&order=${isDescendingSort ? "desc" : "asc"}&filterBy=${filterBy}&filter=${searchFilter}&limit=${searchLimit}&offset=${(pageNumber - 1) * searchLimit}`}</label>
-            <div>
+            <div className={styles.paramsContainer}>
                 <div className={styles.filterContainer}>
-                    <label>Filter by:</label>
-                    <RadioButton 
-                        filterByName='name'
-                        filterByState={filterBy}
-                        setFilterBy={setFilterBy}
-                        labelName='Name'
-                    />
-                    <RadioButton 
-                        filterByName='artist'
-                        filterByState={filterBy}
-                        setFilterBy={setFilterBy}
-                        labelName='Artist'
-                    />
-                    <RadioButton 
-                        filterByName='username'
-                        filterByState={filterBy}
-                        setFilterBy={setFilterBy}
-                        labelName='Username'
-                    />
-                </div>
-            </div>
-            <div>
-                <label>Sort by</label>
-                <select defaultValue={(sortByOptions.indexOf(sortBy) + 1) * (isDescendingSort ? -1 : 1)} onChange={(e) => (parseSortOption(parseInt(e.target.value)))}>'
                     {
-                        sortByOptions.map((option, index) => (
-                            <React.Fragment key={index}>
-                                <option value={-1 * (index + 1)}>{option} desc</option>
-                                <option value={index}>{option} asc</option>
-                            </React.Fragment>
+                        filterByOptions.map((filterOption, index) => (
+                            <label
+                                key={index} 
+                                className={`${styles.filterOption} ${filterBy === filterOption ? styles.selected: styles.notSelected}`}
+                                onClick={() => setFilterBy(filterOption)}>{filterOption}</label>
                         ))
                     }
-                </select>
+                </div>
+                <div>
+                    <label>Sort by</label>
+                    <select defaultValue={(sortByOptions.indexOf(sortBy) + 1) * (isDescendingSort ? -1 : 1)} onChange={(e) => (parseSortOption(parseInt(e.target.value)))}>'
+                        {
+                            sortByOptions.map((option, index) => (
+                                <React.Fragment key={index}>
+                                    <option value={-1 * (index + 1)}>{option} desc</option>
+                                    <option value={index}>{option} asc</option>
+                                </React.Fragment>
+                            ))
+                        }
+                    </select>
+                </div>
             </div>
-            {songs && 
+            { songs?.count === 0 && <div>
+                    <label>NO RESULTS FOUND</label>
+                </div>
+            }
+            {songs && songs.count > 0 &&
                 <div>
                     <SongTable songs={songs.results} />
-                    <div>
-                        <label>page: </label>
-                        {new Array(Math.floor(songs.count / searchLimit) + (songs.count % searchLimit === 0 ? 0 : 1)).fill(0).map((x, index) => (
-                            <label key={index + 1} onClick={() => setPageNumber(index + 1)}>{index + 1}</label>
-                        ))
-                            
-                        }
+                    <div className={styles.pageController}>
+                        <div className={styles.searchLimit}>
+                            <label>result limit</label>
+                            <select defaultValue={searchLimit} onChange={(e) => (setSearchLimit(parseInt(e.target.value)))}>'
+                                <option value={2}>2</option>
+                                <option value={5}>5</option>
+                                <option value={25}>25</option>
+                                <option value={50}>50</option>
+                            </select>
+                        </div>
+                        <div>
+                            <button 
+                                disabled={pageNumber === 1}
+                                onClick={() => setPageNumber(pageNumber - 1)}
+                                >prev</button>
+                            { new Array(getNumberPages(songs.count)).fill(0).map((x, index) => (
+                                <label 
+                                    key={index + 1} 
+                                    onClick={() => setPageNumber(index + 1)}    
+                                >{index + 1}</label>
+                            )) }
+                            <button 
+                                disabled={pageNumber === getNumberPages(songs.count)}
+                                onClick={() => setPageNumber(pageNumber + 1)}
+                                >next</button>
+                        </div>
                     </div>
                 </div>
             }
-            <label>number per page: {searchLimit}</label>
-            <select defaultValue={searchLimit} onChange={(e) => (setSearchLimit(parseInt(e.target.value)))}>'
-                <option value={2}>2</option>
-                <option value={5}>5</option>
-                <option value={25}>25</option>
-                <option value={50}>50</option>
-            </select>
+
         </div>
     )
 }

@@ -14,6 +14,10 @@
   -webkit-text-size-adjust: 100%;
 }
 
+span {
+  cursor: default;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -28,10 +32,15 @@ body {
   min-width: 320px;
   width: 100%;
   min-height: 100vh;
+  background-color: black;
 }
 
 #root {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
 }
 
 h1 {

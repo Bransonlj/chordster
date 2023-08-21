@@ -1,0 +1,39 @@
+.ratingForm {
+    display: flex;
+    flex-direction: column;
+
+    .buttonContainer {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+    }
+}
+
+.userRating {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: end;
+    .buttons {
+        span {
+            color: darkgray;
+            margin: 3px;
+        }
+        span:hover {
+            text-decoration: underline;
+            color: blue;
+            cursor: pointer;
+        }
+    } 
+}
+
+.ratingContainer {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    .username {
+        color: blue;
+        font-weight: bold;
+    }
+}
