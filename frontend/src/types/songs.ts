@@ -34,6 +34,8 @@ export type SongEntry = {
     ratings: [Rating];
     averageScore: number;
     _id: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 // summarised data type received from API server

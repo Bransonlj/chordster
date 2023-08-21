@@ -99,6 +99,7 @@ const getSongDetails = async (req, res) => {
     const { id } = req.params;
     try {
         const song = await Songs.findOne({ _id: id })
+        console.log(song)
         res.status(200).json(song);
     } catch (error) {
         res.status(400).json(error.message)
@@ -216,13 +217,14 @@ const deleteRatingProtected = async (req, res) => {
         const song = await Songs.findById(songIdToDelete);
         const userRatingToDelete = song.ratings.filter((rating) => rating.user.id === userIdToDelete);
         const oldTotalScore = song.ratings.reduce((sum, rating) => sum + rating.score, 0);
-        const newAverageScore = (oldTotalScore - userRatingToDelete[0].score) / (song.ratings.length - 1);
+        const newAverageScore = song.ratings.length - 1 === 0 ? 0 : (oldTotalScore - userRatingToDelete[0].score) / (song.ratings.length - 1);
         await Songs.findByIdAndUpdate(
             songIdToDelete, 
             {  
                 averageScore: newAverageScore,
                 $pull: { ratings: { 'user.id': userIdToDelete } } 
-            });
+            },
+            { timestamps: false },);
         res.status(200).json("success!")
     } catch (error) {
         console.log(error.message)
@@ -244,7 +246,7 @@ const updateRatingProtected = async (req, res) => {
         username: req.user.username,
     };
     const { score: newScore, comment: newComment } = req.body;
-    const rating = { score: newScore, user, comment: newComment };
+    const newRating = { score: newScore, user, comment: newComment, createdAt: new Date(), updatedAt: new Date()};
     try {
         const song = await Songs.findById(songIdToUpdate);
         const userRatingToUpdate = song.ratings.filter((rating) => rating.user.id === userIdToUpdate)
@@ -254,12 +256,22 @@ const updateRatingProtected = async (req, res) => {
             const newAverageScore = (oldTotalScore - userRatingToUpdate[0].score + newScore) / song.ratings.length;
             await Songs.findOneAndUpdate(
                 {_id: songIdToUpdate, 'ratings.user.id': userIdToUpdate}, 
-                {averageScore: newAverageScore, $set: {'ratings.$': rating}});
+                {
+                    averageScore: newAverageScore, 
+                    $set: {
+                        'ratings.$.score': newScore,
+                        'ratings.$.user': user,
+                        'ratings.$.comment': newComment,
+                        'ratings.$.updatedAt': new Date(),
+                    },
+                },
+                { timestamps: false },);
         } else {
             const newAverageScore = (oldTotalScore + newScore) / (song.ratings.length + 1);
             await Songs.findByIdAndUpdate(
                 songIdToUpdate, 
-                {averageScore: newAverageScore, $push: {ratings: rating}});
+                {averageScore: newAverageScore, $push: {ratings: newRating}},
+                { timestamps: false },);
         }
         res.status(200).json("success!")
     } catch (error) {

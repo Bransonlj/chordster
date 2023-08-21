@@ -2,6 +2,10 @@
     display: flex;
     flex-direction: column;
 
+    textarea {
+        white-space: pre-wrap;
+    }
+
     .buttonContainer {
         display: flex;
         flex-direction: row;

@@ -9,6 +9,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useFetchSong } from "../../hooks/useFetchSong";
 import SongRatings from "./SongRatings";
 import styles from './SongView.module.scss'
+import Moment from 'moment';
 
 export default function SongView() {
 
@@ -83,6 +84,7 @@ export default function SongView() {
                         <span className={styles.artist}>by: <strong>{song.artist}</strong></span>
                     </div>
                     <span>Created by: {songUser.username}</span>
+                    <span>last updated {Moment(songEntry.updatedAt).format('D MMM YYYY HH:mm')}</span>
                     <span>Rating: { songEntry.averageScore }</span>
                     <span>key: {keyToString(song.key)}</span>
                     <div className={styles.capoContainer}>

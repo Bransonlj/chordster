@@ -1,5 +1,26 @@
 const mongoose = require("mongoose");
 
+const ratingSchema = new mongoose.Schema({
+    score: {
+        type:Number,
+        required: true,
+    },
+    user: {
+        id: {
+            type: String,
+            required: true,
+        },
+        username: {
+            type: String,
+            required: true,
+        },
+    },
+    comment: {
+        type: String,
+        required: false,
+    },
+}, { timestamps: true })
+
 const songSchema = new mongoose.Schema({
     user: {
         id: {
@@ -79,30 +100,11 @@ const songSchema = new mongoose.Schema({
             }]
         }]
     },
-    ratings: [{
-        score: {
-            type:Number,
-            required: true,
-        },
-        user: {
-            id: {
-                type: String,
-                required: true,
-            },
-            username: {
-                type: String,
-                required: true,
-            },
-        },
-        comment: {
-            type: String,
-            required: false,
-        },
-    }],
+    ratings: [ratingSchema],
     averageScore: {
         type: Number,
         default: 0,
     }
-})
+}, { timestamps: true })
 
 module.exports = mongoose.model('songs', songSchema);

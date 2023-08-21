@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { SongEntry } from "../../types/songs";
 import { useFetchSong } from "../../hooks/useFetchSong";
 import styles from './SongRating.module.scss';
+import Moment from 'moment';
 
 export default function SongRatings({songEntry}: {songEntry: SongEntry}) {
 
@@ -89,7 +90,12 @@ export default function SongRatings({songEntry}: {songEntry: SongEntry}) {
     return (
         <div className={styles.mainContainer}>
             {
-                isEditRating && <div>
+                !user && <div>
+                    <span>You must be logged in to rate or comment</span>  
+                </div>
+            }
+            {
+                user && isEditRating && <div>
                     <form 
                         className={styles.ratingForm}
                         onSubmit={(e) => onRate(e)}>
@@ -111,11 +117,14 @@ export default function SongRatings({songEntry}: {songEntry: SongEntry}) {
                 </div>
             }
             { 
-                !isEditRating && <div className={styles.userRating}>
+                user && !isEditRating && <div className={styles.userRating}>
                     <div className={styles.ratingContainer}>
-                        <span>{ ratingScore }</span>
+                         <div className={styles.ratingHeader}>
+                            <span className={styles.username}>{ user.username }</span>
+                            <span>{ ratingScore }</span>
+                            <span>{Moment(songEntry.ratings.find(rating => rating.user.username === user.username)?.updatedAt).format('D MMM YYYY HH:mm')}</span>
+                        </div>
                         <span>{ ratingComment }</span>
-                        <span className={styles.username}>{ user?.username }</span>
                     </div>
                     <div className={styles.buttons}>
                         <span onClick={() => setIsEditRating(true)}>edit</span>
@@ -128,10 +137,12 @@ export default function SongRatings({songEntry}: {songEntry: SongEntry}) {
             {
                 songEntry.ratings.filter(rating => !!rating.comment && rating.user.username != user?.username).map((rating, index) => (
                     <div key={index} className={styles.ratingContainer}>
-                        <span>{ rating.score } stars</span>
+                         <div className={styles.ratingHeader}>
+                            <span className={styles.username}>{ rating.user.username }</span>
+                            <span>{ rating.score } stars</span>
+                            <span>{Moment(rating.updatedAt).format('D MMM YYYY HH:mm')}</span>
+                        </div>
                         <span>{ rating.comment }</span>
-                        <span className={styles.username}>{ rating.user.username }</span>
-
 
                     </div>
                 ))
