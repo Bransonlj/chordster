@@ -1,10 +1,10 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { Song, SongEntrySummary } from '../../types/songs';
-import { Link } from 'react-router-dom';
 import RadioButton from '../Components/RadioButton';
 import styles from './SongList.module.scss';
 import SongTable from './SongTable';
+import { useSearchParams } from 'react-router-dom';
 
 // naming corresponds to API model fields.
 
@@ -25,7 +25,6 @@ export default function SongList() {
     const [error, setError] = useState<string>("");
     const [songs, setSongs] = useState<GetSongsData>();
 
-    const [searchFilter, setSearchFilter] = useState<string>("");
     const [filterBy, setFilterBy] = useState<FilterBy>("name");
     const [sortBy, setSortBy] = useState<SortBy>("name");
     const [isDescendingSort, setIsDescendingSort] = useState<boolean>(true)
@@ -34,7 +33,11 @@ export default function SongList() {
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [searchLimit, setSearchLimit] = useState<number>(25);
 
+    const [searchParams, setSearchParams] = useSearchParams()
+    const searchFilter = searchParams.get("search") ?? "";
+
     const fetchSearch = () => {
+        console.log("fetching")
         setSongs(undefined);
         setIsLoading(true)
         fetch(`/api/song/?sortBy=${sortBy}&order=${isDescendingSort ? "desc" : "asc"}&filterBy=${filterBy}&filter=${searchFilter}&limit=${searchLimit}&offset=${(pageNumber - 1) * searchLimit}`, { 
@@ -47,7 +50,7 @@ export default function SongList() {
 
     useEffect(() => {
         fetchSearch()
-    }, [sortBy, isDescendingSort, pageNumber, searchLimit])
+    }, [sortBy, isDescendingSort, pageNumber, searchLimit, searchFilter, filterBy])
 
     const parseSortOption = (optionNumber: number) => {
         if (optionNumber < 0) {
@@ -82,10 +85,6 @@ export default function SongList() {
         <div className={styles.mainContainer}>
             <label>querydebug: {`/api/song/?sortBy=${sortBy}&order=${isDescendingSort ? "desc" : "asc"}&filterBy=${filterBy}&filter=${searchFilter}&limit=${searchLimit}&offset=${(pageNumber - 1) * searchLimit}`}</label>
             <div>
-                <label>Search: </label>
-                <input value={searchFilter} onChange={(e) => setSearchFilter(e.target.value)} />
-                <button type='button' onClick={fetchSearch}>Search</button>
-                
                 <div className={styles.filterContainer}>
                     <label>Filter by:</label>
                     <RadioButton 
