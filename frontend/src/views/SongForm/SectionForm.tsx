@@ -1,17 +1,18 @@
-import { Control, Controller, FieldErrors, UseFieldArrayInsert, UseFieldArrayRemove, UseFieldArraySwap, UseFormRegister, useFieldArray, useWatch } from "react-hook-form";
-import { ChordLyric, Section, Song, defaultChordLyric, defaultSection } from "../../types/songs";
+import { Control, Controller, FieldErrors, UseFieldArrayInsert, UseFieldArrayRemove, UseFieldArraySwap, UseFormGetValues, UseFormRegister, useFieldArray, useWatch } from "react-hook-form";
+import { ChordLyric, Section, Song } from "../../types/songs";
 import ChordForm from "./ChordForm";
 import Select from 'react-select'
 import { Chord, Key } from "../../types/chords";
 import { getAllKeys, keyToString } from "../../utils/chords";
 import _ from "lodash";
-import { isDefaultChordLyric, isDefaultSection } from "../../utils/songs";
+import { getDefaultSection, isDefaultSection } from "../../utils/songs";
 import SwapGroup from "./SwapGroup";
 import Tippy from "@tippyjs/react";
 import 'tippy.js/dist/tippy.css'; // optional
 import styles from './SectionForm.module.scss';
 import { customStyle } from "../../utils/react-select";
 import IconButton from "../Components/IconButton";
+import { useEffect, useRef, useState } from "react";
 
 function CloneSection({ control, insert, sectionIndex }: {control: Control<Song>, insert: UseFieldArrayInsert<Song, "sections">, sectionIndex:number}) {
     const sectionValue: Section = useWatch({
@@ -26,7 +27,7 @@ function CloneSection({ control, insert, sectionIndex }: {control: Control<Song>
 
 function DeleteSection({ control, remove, sectionIndex, numSections }: {control: Control<Song>, remove: UseFieldArrayRemove, sectionIndex: number, numSections: number}) {
     function handleDeleteSection(section: Section) {
-        if (isDefaultSection(section)) {
+        if (isDefaultSection(section, sectionIndex)) {
             remove(sectionIndex)
         } else if (window.confirm("Delete section?")) {
             remove(sectionIndex);
@@ -54,11 +55,14 @@ interface SectionProps {
     insertSection: UseFieldArrayInsert<Song, "sections">;
     swapSection: UseFieldArraySwap;
     numSections: number;
+    getValues: UseFormGetValues<Song>;
 }
 
 const allKeys: Key[] = getAllKeys();
 
-export function SectionForm( { section, sectionIndex, control, register, errors, removeSection, insertSection, swapSection, numSections }: SectionProps ) {
+export function SectionForm( { section, sectionIndex, control, register, errors, removeSection, insertSection, swapSection, numSections, getValues }: SectionProps ) {
+
+    const [isEditTitle, setIsEditTitle] = useState<boolean>(false);
 
     const { fields: chords, append: appendChord, remove: removeChord, swap: swapChord, insert: insertChord } = useFieldArray({
         control, // control props comes from useForm (optional: if you are using FormContext)
@@ -66,18 +70,40 @@ export function SectionForm( { section, sectionIndex, control, register, errors,
         rules: { minLength: 1 },
     });
 
+    const titleRef = useRef<HTMLInputElement | null>(null);
+    const { ref, ...rest } = register(`sections.${sectionIndex}.title`, { required:true });
+
+    const handleEditTitle = () => {
+        setIsEditTitle(true);
+    }
+
+    useEffect(() => {
+        if (isEditTitle) {
+            titleRef.current?.focus();
+        }
+    }, [isEditTitle])
+
     return (
         <div className={styles.mainContainer}>
             <div className={styles.sectionContainer}>
-                <h2>Section {sectionIndex + 1}</h2>
-                <div className={styles.sectionInfo}>
-                    <label>Section Title</label>
-                    <input {...register(`sections.${sectionIndex}.title`, { required:true })} />
+                <div className={styles.sectionTitle} >
+                    {!isEditTitle && <span onClick={handleEditTitle}>{getValues(`sections.${sectionIndex}.title`) !== "" ? getValues(`sections.${sectionIndex}.title`) : "Enter Title..."}</span>}
+                    <input 
+                        {...rest}
+                        onBlur={() => setIsEditTitle(false)}
+                        style={{ display: isEditTitle ? 'block' : 'none' }}
+                        onKeyDown={e => {if (e.key === "Enter") {titleRef.current?.blur()}}}
+                        ref={(e) => {
+                            ref(e);
+                            titleRef.current = e;
+                        }} />
                     {
                         errors.sections?.[sectionIndex]?.title && <div>Error, title cannot be empty</div>
                     }
+                    </div>
+                <div className={styles.sectionInfo}>
                     <Tippy content="Section Key will overide Song Key. If you want to use Song Key for this section, select N/A. Numeric chords will not be available if no Song or Section key is selected">
-                        <label>Section key</label>
+                        <label>Section key: </label>
                     </Tippy>
                     <Controller
                         name={ `sections.${sectionIndex}.key` } // for register
@@ -115,7 +141,7 @@ export function SectionForm( { section, sectionIndex, control, register, errors,
                 <CloneSection control={control} sectionIndex={sectionIndex} insert={insertSection}></CloneSection>
                 <SwapGroup isSwapUp index={sectionIndex} swap={swapSection} />
                 <SwapGroup isSwapUp={false} index={sectionIndex} swap={swapSection} length={numSections} />
-                <IconButton onClick={() => insertSection(sectionIndex + 1, defaultSection)} src='/plus-icon.png' />
+                <IconButton onClick={() => insertSection(sectionIndex + 1, getDefaultSection(sectionIndex + 1))} src='/plus-icon.png' />
             </div>
         </div>
     )

@@ -5,10 +5,29 @@
 
 }
 
+.sectionTitle {
+    span{
+        font-size: 1.5em;
+        font-weight: bold;
+        &:hover {
+            border: 1px solid black;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    }
+
+
+    input {
+        font-size: 1.5em;
+    }
+}
+
 .sectionInfo {
     display: flex;
     flex-direction: row;
     gap: 3px;
+
+
 }
 
 .sectionContainer {

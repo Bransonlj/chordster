@@ -1,4 +1,4 @@
-import { Chord, Key, defaultChord, defaultKey } from "./chords";
+import { Chord, Key } from "./chords";
 import { Rating } from "./rating";
 import { SongUser } from "./user";
 
@@ -48,23 +48,4 @@ export type SongEntrySummary = {
     averageScore: number;
     _id: string;
     totalRatings: number;
-}
-
-export const defaultChordLyric: ChordLyric = {
-    chord: defaultChord,
-    lyric: "",
-}
-
-export const defaultSection: Section = {
-    title: "",
-    key: defaultKey,
-    chords: [defaultChordLyric],
-}
-
-export const defaultSong: Song = {
-    name: "",
-    artist: "",
-    capo: 0,
-    key: defaultKey,
-    sections: [defaultSection],
 }

@@ -44,16 +44,3 @@ export type Key = {
     // either major or minor key
     isMajor: boolean;
 }
-
-// default has alternative meaning of empty
-export const defaultChord: Chord = {
-    noteLetter: emptyNoteLetter,
-    accidental: "",
-    chordType: "",
-}
-
-export const defaultKey: Key = {
-    noteLetter: emptyNoteLetter,
-    accidental: "",
-    isMajor: true,
-}

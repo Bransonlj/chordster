@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { Control, Controller, UseFieldArrayInsert, UseFieldArrayRemove, UseFieldArraySwap, UseFormRegister, useWatch } from "react-hook-form"
-import { ChordLyric, Song, defaultChordLyric } from "../../types/songs"
+import { ChordLyric, Song } from "../../types/songs"
 import { Chord } from "../../types/chords";
 import AsyncSelect from 'react-select/async'
 import { chordToString, getAllChords } from '../../utils/chords';
 import _ from 'lodash'
-import { isDefaultChordLyric } from '../../utils/songs';
+import { defaultChordLyric, isDefaultChordLyric } from '../../utils/songs';
 import SwapGroup from './SwapGroup';
 import styles from "./ChordForm.module.scss";
 import { customStyle } from '../../utils/react-select';

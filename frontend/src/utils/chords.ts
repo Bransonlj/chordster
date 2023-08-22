@@ -1,4 +1,17 @@
-import { Accidental, Chord, NoteLetter, NumericChord, Key, majorChords, minorChords, Numeral, Letters, Accidentals, ChordType, NonEmptyNoteLetter, emptyNoteLetter, NonEmptyNumeral, emptyNumeral, defaultChord, defaultKey } from "../types/chords";
+import { Accidental, Chord, NoteLetter, NumericChord, Key, majorChords, minorChords, Numeral, Letters, Accidentals, ChordType, NonEmptyNoteLetter, emptyNoteLetter, NonEmptyNumeral, emptyNumeral } from "../types/chords";
+
+// default has alternative meaning of empty
+export const defaultChord: Chord = {
+    noteLetter: emptyNoteLetter,
+    accidental: "",
+    chordType: "",
+}
+
+export const defaultKey: Key = {
+    noteLetter: emptyNoteLetter,
+    accidental: "",
+    isMajor: true,
+}
 
 export function getAllChords(): Chord[] {
     const chords: Chord[] = [];

@@ -1,5 +1,5 @@
 import { useForm, useFieldArray, Controller } from "react-hook-form";
-import { Song, defaultSection, defaultSong } from "../../types/songs";
+import { Song } from "../../types/songs";
 import { SectionForm } from "./SectionForm";
 import _ from "lodash";
 import Select from 'react-select'
@@ -11,6 +11,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useFetchSong } from "../../hooks/useFetchSong";
 import { customStyle } from "../../utils/react-select";
+import { defaultSong } from "../../utils/songs";
 
 const allKeys: Key[] = getAllKeys();
     
@@ -21,7 +22,7 @@ export default function SongForm({song, songId}: {song?: Song, songId?: string})
     const navigate = useNavigate()
 
     const { error: submitError, isSuccess, isLoading, fetchSong } = useFetchSong(user, `/api/song/protected/${songId ?? ''}`, {}, false);
-    const { control, register, reset, formState: { errors }, handleSubmit } = useForm<Song>({
+    const { control, register, reset, formState: { errors }, handleSubmit, getValues } = useForm<Song>({
         defaultValues: defaultSong,
     });
     const { fields: sections, append: appendSection, remove: removeSection, swap: swapSection, insert: insertSection } = useFieldArray({
@@ -60,36 +61,44 @@ export default function SongForm({song, songId}: {song?: Song, songId?: string})
             {isLoading && <label>Loading</label>}
             {submitError && <label>{submitError}</label>}
             <form onSubmit={onSubmit} className={styles.formContainer}>
-                <label>Song Name: </label>
-                <input {...register("name", { required: true })} />
+                <div className={styles.songField}>
+                    <label>Song Name:</label>
+                    <input {...register("name", { required: true })} />
+                </div>
                 {
-                    errors.name && <div>Enter name</div>
+                    errors.name && <span>Song Name is required</span>
                 }
-                <label>Artist: </label>
-                <input {...register("artist", { required: true })} />
+                <div className={styles.songField}>
+                    <label>Artist:</label>
+                    <input {...register("artist", { required: true })} />
+                </div>
                 {
-                    errors.artist && <div>Enter artist</div>
+                    errors.artist && <span>Artist is required</span>
                 }
-                <label>Capo: </label>
-                <input {...register("capo", { required: true, min: 0, max: 11 })} type='number'/>
+                <div className={styles.songField}>
+                    <label>Capo:</label>
+                    <input {...register("capo", { required: true, min: 0, max: 11 })} type='number' min={0} max={11}/>
+                </div>
                 {
-                    errors.capo && <div>Enter capo</div>
+                    errors.capo && <span>Capo value is required</span>
                 }
-                <label>Song Key: </label>
-                <Controller
-                    name={ `key` } // for register
-                    control={ control }
-                    render={ ({ field: { onChange } }) => (
-                        <Select
-                            styles={customStyle}
-                            options={ allKeys }
-                            getOptionLabel={(key: Key) => keyToString(key)}
-                            getOptionValue={(key: Key) => keyToString(key)}
-                            onChange={ selectedOption => onChange(selectedOption) }
-                            defaultValue={ song?.key }
-                        />
-                    ) }
-                />
+                <div className={styles.songField}>
+                    <label>Song Key:</label>
+                    <Controller
+                        name={ `key` } // for register
+                        control={ control }
+                        render={ ({ field: { onChange } }) => (
+                            <Select
+                                styles={customStyle}
+                                options={ allKeys }
+                                getOptionLabel={(key: Key) => keyToString(key)}
+                                getOptionValue={(key: Key) => keyToString(key)}
+                                onChange={ selectedOption => onChange(selectedOption) }
+                                defaultValue={ song?.key }
+                            />
+                        ) }
+                    />
+                </div>
 
                 <div className={styles.sectionsContainer}>
                     {   
@@ -104,7 +113,8 @@ export default function SongForm({song, songId}: {song?: Song, songId?: string})
                                 removeSection={removeSection}
                                 insertSection={insertSection}
                                 swapSection={swapSection}
-                                numSections={sections.length} />
+                                numSections={sections.length} 
+                                getValues={getValues}/>
 
                         ))
                     }
