@@ -10,9 +10,10 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useFetchSong } from "../../hooks/useFetchSong";
+import { customStyle } from "../../utils/react-select";
 
 const allKeys: Key[] = getAllKeys();
-
+    
 export default function SongForm({song, songId}: {song?: Song, songId?: string}) {
 
     const isEdit = !!songId;
@@ -55,7 +56,7 @@ export default function SongForm({song, songId}: {song?: Song, songId?: string})
     })
 
     return (
-        <div>
+        <div className={styles.mainContainer}>
             {isLoading && <label>Loading</label>}
             {submitError && <label>{submitError}</label>}
             <form onSubmit={onSubmit} className={styles.formContainer}>
@@ -80,6 +81,7 @@ export default function SongForm({song, songId}: {song?: Song, songId?: string})
                     control={ control }
                     render={ ({ field: { onChange } }) => (
                         <Select
+                            styles={customStyle}
                             options={ allKeys }
                             getOptionLabel={(key: Key) => keyToString(key)}
                             getOptionValue={(key: Key) => keyToString(key)}
@@ -88,31 +90,26 @@ export default function SongForm({song, songId}: {song?: Song, songId?: string})
                         />
                     ) }
                 />
-                <div>
-                    <label onClick={ () => appendSection(defaultSection) }>Add Section</label>
-                    <input type="submit"/>
-                </div>
 
                 <div className={styles.sectionsContainer}>
-                {   
-                    sections.map((field, sectionIndex) => (
-                        <SectionForm 
-                            key={field.id}
-                            section={field} 
-                            sectionIndex={sectionIndex} 
-                            control={control} 
-                            register={register} 
-                            errors={errors}
-                            removeSection={removeSection}
-                            insertSection={insertSection}
-                            swapSection={swapSection}
-                            numSections={sections.length} />
+                    {   
+                        sections.map((field, sectionIndex) => (
+                            <SectionForm 
+                                key={field.id}
+                                section={field} 
+                                sectionIndex={sectionIndex} 
+                                control={control} 
+                                register={register} 
+                                errors={errors}
+                                removeSection={removeSection}
+                                insertSection={insertSection}
+                                swapSection={swapSection}
+                                numSections={sections.length} />
 
-                    ))
-                }
+                        ))
+                    }
                 </div>
                 <div>
-                    <label onClick={ () => appendSection(defaultSection) }>Add Section</label>
                     <button type="submit">{isEdit ? "Save" : "Submit"}</button>
                 </div>
 

@@ -1,4 +1,5 @@
 import { UseFieldArraySwap } from "react-hook-form";
+import IconButton from "../Components/IconButton";
 
 interface SwapGroupProps {
     isSwapUp: boolean;
@@ -12,17 +13,13 @@ export default function SwapGroup({ isSwapUp=true, index, swap, length=0 }: Swap
     if (isSwapUp) {
         return (
             <>
-            {
-                index >= 1 && <label onClick={() => swap(index, index - 1)}>Move Up</label>
-            }
+                <IconButton disabled={index === 0} onClick={() => swap(index, index - 1)} src="/up-arrow-icon.png"></IconButton>
             </>
         )
     } else {
         return (
             <>
-            {
-                index < length - 1 && <label onClick={() => swap(index, index + 1)}>Move Down</label>
-            }
+                <IconButton disabled={index >= length - 1} onClick={() => swap(index, index + 1)} src="/down-arrow-icon.png"></IconButton>
             </>
         )
     }

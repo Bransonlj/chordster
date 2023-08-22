@@ -8,6 +8,8 @@ import _ from 'lodash'
 import { isDefaultChordLyric } from '../../utils/songs';
 import SwapGroup from './SwapGroup';
 import styles from "./ChordForm.module.scss";
+import { customStyle } from '../../utils/react-select';
+import IconButton from '../Components/IconButton';
 
 const allChords: Chord[] = getAllChords();
 
@@ -18,11 +20,11 @@ function CloneChord({ control, insert, sectionIndex, chordIndex }: {control: Con
     });
   
     return (
-      <label onClick={() => insert(chordIndex + 1, chordValue)}>Copy</label>
+        <IconButton onClick={() => insert(chordIndex + 1, chordValue)} src='/copy-icon.png' />
     )
   }
 
-function DeleteChord({ control, remove, sectionIndex, chordIndex }: {control: Control<Song>, remove: UseFieldArrayRemove, sectionIndex: number, chordIndex: number}) {
+function DeleteChord({ control, remove, sectionIndex, chordIndex, numChords }: {control: Control<Song>, remove: UseFieldArrayRemove, sectionIndex: number, chordIndex: number, numChords: number}) {
 
     function handleDeleteChord(chordLyric: ChordLyric) {
         if (isDefaultChordLyric(chordLyric)) {
@@ -38,7 +40,7 @@ function DeleteChord({ control, remove, sectionIndex, chordIndex }: {control: Co
     })
 
     return (
-        <label onClick={ () => handleDeleteChord(chordValue) }>Delete Chord</label>
+        <IconButton disabled={numChords === 1} onClick={ () => handleDeleteChord(chordValue) } src='/trashcan-icon.png' />
     )
 }
 
@@ -61,6 +63,7 @@ function SelectChord({ onChange, chord }: {onChange: any, chord: Chord}) {
   
     return (
         <AsyncSelect 
+            styles={customStyle}
             cacheOptions 
             loadOptions={loadOptions} 
             getOptionLabel={(chord: Chord) => chordToString(chord)}
@@ -96,7 +99,13 @@ interface ChordProps {
 export default function ChordForm ({ chordLyric, sectionIndex, chordIndex, register, control, remove, insert, swap, numChords }: ChordProps) {
     return (
         <div className={styles.mainContainer}>
-            <label>Chord</label>
+            <div className={styles.controlsContainer}>
+                <DeleteChord control={control} remove={remove} sectionIndex={sectionIndex} chordIndex={chordIndex} numChords={numChords} />
+                <CloneChord control={control} sectionIndex={sectionIndex} chordIndex={chordIndex} insert={insert}></CloneChord>
+                <SwapGroup isSwapUp index={chordIndex} swap={swap} />
+                <SwapGroup isSwapUp={false} index={chordIndex} swap={swap} length={numChords} />
+                <IconButton onClick={() => insert(chordIndex + 1, defaultChordLyric)} src='/plus-icon.png' />
+            </div>
             <Controller
                 name={ `sections.${sectionIndex}.chords.${chordIndex}.chord` }
                 control={ control }
@@ -105,14 +114,7 @@ export default function ChordForm ({ chordLyric, sectionIndex, chordIndex, regis
                 ) }
             />
             <div>
-                <label>Lyrics</label>
-                <input {...register(`sections.${sectionIndex}.chords.${chordIndex}.lyric`)} />
-            </div>
-            <div className={styles.controlsContainer}>
-                <DeleteChord control={control} remove={remove} sectionIndex={sectionIndex} chordIndex={chordIndex} />
-                <CloneChord control={control} sectionIndex={sectionIndex} chordIndex={chordIndex} insert={insert}></CloneChord>
-                <SwapGroup isSwapUp index={chordIndex} swap={swap} />
-                <SwapGroup isSwapUp={false} index={chordIndex} swap={swap} length={numChords} />
+                <input placeholder='Enter lyrics...' {...register(`sections.${sectionIndex}.chords.${chordIndex}.lyric`)} />
             </div>
         </div>
     )

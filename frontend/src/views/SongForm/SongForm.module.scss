@@ -1,4 +1,15 @@
+.mainContainer {
+    width: 100%;
+    padding: 10px;
+}
+
 .formContainer {
     display: flex;
     flex-direction: column;
+}
+
+.sectionsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }

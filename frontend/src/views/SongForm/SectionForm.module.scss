@@ -1,9 +1,29 @@
 .mainContainer {
-    border: 1px solid black;
+    display: flex;
+    flex-direction: row;
+
+
+}
+
+.sectionInfo {
+    display: flex;
+    flex-direction: row;
+    gap: 3px;
+}
+
+.sectionContainer {
+    padding: 3px;
+    min-width: 50%;
+    border-bottom: 1px solid black;
 }
 
 .controlsContainer {
-    & * {
-        border: 1px solid black;
-    }
+
+}
+
+.chordContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 5px;
 }

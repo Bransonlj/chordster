@@ -1,10 +1,9 @@
 .mainContainer {
-    margin: 5px;
-    border: 1px solid black;
+    padding: 3px;
+
 }
 
 .controlsContainer {
-    & * {
-        border: 1px solid black;
-    }
+    display: flex;
+    flex-direction: row;
 }
