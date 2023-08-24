@@ -1,7 +1,17 @@
 @use "../../styles/colours.scss";
 
 .table {
-    border: 1px solid colours.$black;
+    width: 100%;
+    border-spacing: 0;
+    border-collapse: collapse;
+    min-width: 600px;
+
+    td {
+        max-width: 350px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 }
 
 .star {

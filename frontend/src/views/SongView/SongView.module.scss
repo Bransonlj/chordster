@@ -1,18 +1,24 @@
+@use "../../styles/colours.scss";
+
 .floatingContainer {
     position: sticky;
     bottom: 0;
     padding: 10px;
+    
 }
-.controlContainer {
-    border: 1px solid black;
-    background-color: lightgray;
+.innerContainer {
+    margin: auto;
+    width: 70%;
+    border: 1px solid colours.$purple;
+    background-color: rgba(colours.$pink, .9);
 
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     
     padding: 5px;
-
+    color: colours.$black;
+    font-weight: 500;
 }
 
 .numericView {
@@ -24,11 +30,12 @@
     }
 
     &.selected {
-        background-color: grey;
+        background-color: colours.$purple;
+        color: colours.$grey;
     }
 
     &.notSelected:hover {
-        background-color: lightslategrey;
+        background-color: colours.$dark-pink;
     }
 }
 
@@ -41,31 +48,55 @@
         padding-left: 5px;
         padding-right: 5px;
         border-radius: 5px;
-        background-color: rgb(177, 176, 176);
+        background-color: colours.$dark-pink;
+        color: colours.$grey;
+        cursor: pointer;
         &:hover {
-            cursor: pointer;
-            background-color: gray;
+            background-color: colours.$purple;
         }
     }
 }
 
 
-.infoContainer {
+.headerContainer {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 }
 
-.metaContainer {
+.infoContainer {
     display: flex;
     flex-direction: column;
+}
 
+.metaInfo {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+
+    .userName {
+        color: colours.$purple;
+    }
+
+    .score {
+
+    }
+
+    .star {
+        color: colours.$starcolour;
+    }
+
+    .lastUpdated {
+        font-size: 0.9em;
+        color: colours.$dark-grey;
+    }
 }
 
 .infoHeader {
     display: flex;
     flex-direction: column;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid colours.$black;
     .songName {
         font-weight: bold;
         font-size: 2.5em;

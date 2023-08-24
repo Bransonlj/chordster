@@ -1,4 +1,4 @@
-import { Section, Song, SongEntry, defaultSong } from "../../types/songs";
+import { Section, Song, SongEntry } from "../../types/songs";
 import { useEffect, useState } from 'react';
 import { keyToString } from "../../utils/chords";
 import SectionDetails from "./SectionDetails";
@@ -10,6 +10,7 @@ import { useFetchSong } from "../../hooks/useFetchSong";
 import SongRatings from "./SongRatings";
 import styles from './SongView.module.scss'
 import Moment from 'moment';
+import { FaStar } from 'react-icons/fa';
 
 export default function SongView() {
 
@@ -77,15 +78,20 @@ export default function SongView() {
 
     return (
         <div className={styles.mainContainer}>
-            <div className={styles.infoContainer}>
-                <div className={styles.metaContainer}>
+            <div className={styles.headerContainer}>
+                <div className={styles.infoContainer}>
                     <div className={styles.infoHeader}>
                         <span className={styles.songName}>{song.name}</span>
-                        <span className={styles.artist}>by: <strong>{song.artist}</strong></span>
+                        <span className={styles.artist}><strong>{song.artist}</strong></span>
                     </div>
-                    <span>Created by: {songUser.username}</span>
-                    <span>last updated {Moment(songEntry.updatedAt).format('D MMM YYYY HH:mm')}</span>
-                    <span>Rating: { songEntry.averageScore }</span>
+                    <div className={styles.metaInfo}>
+                        
+                        <span>By: <strong className={styles.userName}>{ songUser.username }</strong></span>
+                        <span className={styles.score}>{ songEntry.averageScore }</span>
+                        <FaStar className={styles.star} size={20} />
+                        <span className={styles.lastUpdated}>Last updated: {Moment(songEntry.updatedAt).format('D MMM YYYY HH:mm')}</span>
+                        
+                    </div>
                     <span>key: {keyToString(song.key)}</span>
                     <div className={styles.capoContainer}>
                         <span>capo: {song.capo}</span>
@@ -114,7 +120,7 @@ export default function SongView() {
                 }
             </div>
             <div className={styles.floatingContainer}>
-                <div className={styles.controlContainer}>
+                <div className={styles.innerContainer}>
                     <span 
                         className={`${styles.numericView} ${isNumericView ? styles.selected : styles.notSelected}`}
                         onClick={() => setIsNumericView(!isNumericView)}>Numeric View</span>

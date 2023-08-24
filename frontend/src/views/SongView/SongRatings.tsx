@@ -139,8 +139,8 @@ export default function SongRatings({songEntry}: {songEntry: SongEntry}) {
                     <div key={index} className={styles.ratingContainer}>
                          <div className={styles.ratingHeader}>
                             <span className={styles.username}>{ rating.user.username }</span>
-                            <span>{ rating.score } stars</span>
-                            <span>{Moment(rating.updatedAt).format('D MMM YYYY HH:mm')}</span>
+                            <StarRating defaultValue={rating.score} size={20} viewOnly={true} />
+                            <span className={styles.date}>{Moment(rating.updatedAt).format('D MMM YYYY HH:mm')}</span>
                         </div>
                         <span>{ rating.comment }</span>
 

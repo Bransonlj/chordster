@@ -97,14 +97,14 @@ export default function SongList() {
                         ))
                     }
                 </div>
-                <div>
-                    <label>Sort by</label>
+                <div className={styles.sortByContainer}>
+                    <label>Sort by: </label>
                     <select defaultValue={(sortByOptions.indexOf(sortBy) + 1) * (isDescendingSort ? -1 : 1)} onChange={(e) => (parseSortOption(parseInt(e.target.value)))}>'
                         {
                             sortByOptions.map((option, index) => (
                                 <React.Fragment key={index}>
                                     <option value={-1 * (index + 1)}>{option} desc</option>
-                                    <option value={index}>{option} asc</option>
+                                    <option value={index + 1}>{option} asc</option>
                                 </React.Fragment>
                             ))
                         }
@@ -120,7 +120,7 @@ export default function SongList() {
                     <SongTable songs={songs.results} />
                     <div className={styles.pageController}>
                         <div className={styles.searchLimit}>
-                            <label>result limit</label>
+                            <label>Results per page: </label>
                             <select defaultValue={searchLimit} onChange={(e) => (setSearchLimit(parseInt(e.target.value)))}>'
                                 <option value={2}>2</option>
                                 <option value={5}>5</option>
@@ -128,21 +128,25 @@ export default function SongList() {
                                 <option value={50}>50</option>
                             </select>
                         </div>
-                        <div>
+                        <div className={styles.pageNumberContainer}>
                             <button 
                                 disabled={pageNumber === 1}
                                 onClick={() => setPageNumber(pageNumber - 1)}
-                                >prev</button>
-                            { new Array(getNumberPages(songs.count)).fill(0).map((x, index) => (
-                                <label 
-                                    key={index + 1} 
-                                    onClick={() => setPageNumber(index + 1)}    
-                                >{index + 1}</label>
-                            )) }
+                                >Prev</button>
+                            { new Array(getNumberPages(songs.count)).fill(0).map((x, index) => {
+                                const thisPage = index + 1;
+                                return(
+                                    <span 
+                                        className={`${styles.pageNumber} ${pageNumber === thisPage ? styles.selected : ""}`}
+                                        key={thisPage} 
+                                        onClick={() => setPageNumber(thisPage)}    
+                                    >{thisPage}</span>
+                                )
+                            }) }
                             <button 
                                 disabled={pageNumber === getNumberPages(songs.count)}
                                 onClick={() => setPageNumber(pageNumber + 1)}
-                                >next</button>
+                                >Next</button>
                         </div>
                     </div>
                 </div>

@@ -52,11 +52,22 @@
     }
 }
 
+.sortByContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
 .contentContainer {
-    background-color: colours.$white;
+    background-color: colours.$off-white;
+    width: 100%;
+
 }
 
 .pageController {
+    padding-top: 10px;
+    padding-bottom: 5px;
+    background-color: colours.$white;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -65,4 +76,28 @@
 .searchLimit {
     display: flex;
     flex-direction: row;
+    align-items: center;
+    gap: 5px;
+    select {
+        height: 60%;
+    }
+}
+
+
+.pageNumberContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 3px;
+}
+.pageNumber{
+    padding: 0px 5px;
+    cursor: pointer;
+
+    &:hover {
+        border-bottom: 2px solid colours.$dark-grey;
+    }
+
+    &.selected {
+        border-bottom: 3px solid colours.$black;
+    }
 }

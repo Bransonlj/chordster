@@ -84,9 +84,9 @@ const getSongs = async (req, res) => {
         }
         console.log("success!");
         res.status(200).json(data);
-    } catch (err) {
-        console.log(err.message)
-        res.status(400).json(err.message);
+    } catch (error) {
+        console.log(error.message)
+        res.status(400).json({error: error.message})
     }
 }
 
@@ -102,7 +102,7 @@ const getSongDetails = async (req, res) => {
         console.log("success!")
         res.status(200).json(song);
     } catch (error) {
-        res.status(400).json(error.message)
+        res.status(400).json({error: error.message})
     }
 }
 
@@ -123,7 +123,7 @@ const getSongDetailsProtected = async (req, res) => {
         }
     } catch (error) {
         console.log(error.message)
-        res.status(400).json(error.message)
+        res.status(400).json({error: error.message})
     }
 }
 
@@ -146,7 +146,7 @@ const deleteSongProtected = async (req, res) => {
         }
     } catch (error) {
         console.log(error.message)
-        res.status(400).json(error.message)
+        res.status(400).json({error: error.message})
     }
 }
 
@@ -167,9 +167,9 @@ const createSongProtected = (req, res) => {
             console.log("successfully added");
             res.status(200).json("success!");
         })
-        .catch(err => {
-            console.log(err.message);
-            res.status(400).json(err.message);
+        .catch(error => {
+            console.log(error.message);
+            res.status(400).json({error: error.message})
         });
 
 }
@@ -201,7 +201,7 @@ const updateSongProtected = async (req, res) => {
         }
     } catch (error) {
         console.log(error.message)
-        res.status(400).json(error.message)
+        res.status(400).json({error: error.message})
     }
 }
 
@@ -228,7 +228,7 @@ const deleteRatingProtected = async (req, res) => {
         res.status(200).json("success!")
     } catch (error) {
         console.log(error.message)
-        res.status(400).json(error.message)
+        res.status(400).json({error: error.message})
     }
 }
 
@@ -246,6 +246,11 @@ const updateRatingProtected = async (req, res) => {
         username: req.user.username,
     };
     const { score: newScore, comment: newComment } = req.body;
+    if (newScore <=0 || newScore > 5) {
+        console.log("Score must be between 1-5");
+        res.status(400).json({error: "Score must be between 1-5"});
+        return;
+    }
     const newRating = { score: newScore, user, comment: newComment, createdAt: new Date(), updatedAt: new Date()};
     try {
         const song = await Songs.findById(songIdToUpdate);
@@ -275,8 +280,8 @@ const updateRatingProtected = async (req, res) => {
         }
         res.status(200).json("success!")
     } catch (error) {
-        console.log(error.message)
-        res.status(400).json(error.message)
+        console.log(error.message);
+        res.status(400).json({error: error.message})
     }
 }
 
