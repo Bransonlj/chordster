@@ -36,7 +36,7 @@ export default function MainNavBar() {
                     <NavLink to="/song/list">All songs</NavLink>
                     <NavLink to="/song/create">Add songs</NavLink>
                 </nav>
-                <div>
+                <div className={styles.searchBar}>
                     <input value={search} onChange={(e) => setSearch(e.target.value)}></input>
                     <button type="button" onClick={handleSearch}>Search</button>
                 </div>

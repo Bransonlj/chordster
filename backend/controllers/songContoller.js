@@ -99,7 +99,7 @@ const getSongDetails = async (req, res) => {
     const { id } = req.params;
     try {
         const song = await Songs.findOne({ _id: id })
-        console.log(song)
+        console.log("success!")
         res.status(200).json(song);
     } catch (error) {
         res.status(400).json(error.message)

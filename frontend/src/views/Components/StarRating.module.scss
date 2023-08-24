@@ -1,0 +1,23 @@
+@use "../../styles/colours.scss";
+
+
+.starContainer {
+    input {
+        display: none;
+    }
+}
+
+
+.star {
+    &.clickable{
+        cursor: pointer;
+    }
+
+    &.selected {
+        color: colours.$starcolour;
+    }
+
+    &.unselected {
+        color: colours.$black
+    }
+}

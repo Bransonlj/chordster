@@ -111,12 +111,12 @@ export default function SongList() {
                     </select>
                 </div>
             </div>
-            { songs?.count === 0 && <div>
+            { songs?.count === 0 && <div className={styles.contentContainer}>
                     <label>NO RESULTS FOUND</label>
                 </div>
             }
             {songs && songs.count > 0 &&
-                <div>
+                <div className={styles.contentContainer}>
                     <SongTable songs={songs.results} />
                     <div className={styles.pageController}>
                         <div className={styles.searchLimit}>

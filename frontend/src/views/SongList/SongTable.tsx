@@ -1,29 +1,34 @@
 import { Link } from "react-router-dom";
 import { SongEntrySummary } from "../../types/songs";
 import styles from './SongTable.module.scss'
+import { FaStar } from 'react-icons/fa';
 
 export default function SongTable({ songs }: {songs: SongEntrySummary[]}) {
+
     return (
         <table className={styles.table}>
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>artist</th>
-                    <th>rating</th>
-                    <th>total</th>
+                    <th>Song</th>
+                    <th>Artist</th>
+                    <th>Rating</th>
                     <th>Created by:</th>
-                    <th>link</th>
                 </tr>
             </thead>
             <tbody>
                 { songs.map((songEntry: SongEntrySummary, index: number) => (
                         <tr key={index}>
-                            <td>{songEntry.song.name}</td>
+                            <td><Link to={`/song/view/${songEntry._id}`}>{songEntry.song.name}</Link></td>
                             <td>{songEntry.song.artist}</td>
-                            <td>{songEntry.averageScore}</td>
-                            <td>{songEntry.totalRatings}</td>
+                            {
+                                songEntry.averageScore === 0 
+                                    ? <td></td> 
+                                    : <td>{songEntry.averageScore}
+                                        <FaStar className={styles.star} size={15} /> 
+                                        <span className={styles.totalRatings}>{songEntry.totalRatings}</span>
+                                    </td>
+                            }
                             <td>{songEntry.user.username}</td>
-                            <td><Link to={`/song/view/${songEntry._id}`}>view</Link></td>
                         </tr>
                     ))
                 }

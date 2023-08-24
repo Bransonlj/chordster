@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import './index.css'
+import './index.scss'
 import SongForm from './views/SongForm/SongForm.tsx'
 import { AuthContextProvider } from './context/AuthContext.tsx'
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom'

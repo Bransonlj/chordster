@@ -100,8 +100,8 @@ export function SectionForm( { section, sectionIndex, control, register, errors,
                     {
                         errors.sections?.[sectionIndex]?.title && <div>Error, title cannot be empty</div>
                     }
-                    </div>
-                <div className={styles.sectionInfo}>
+                </div>
+                <div className={styles.sectionKey}>
                     <Tippy content="Section Key will overide Song Key. If you want to use Song Key for this section, select N/A. Numeric chords will not be available if no Song or Section key is selected">
                         <label>Section key: </label>
                     </Tippy>

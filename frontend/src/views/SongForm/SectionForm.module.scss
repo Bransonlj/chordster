@@ -22,10 +22,11 @@
     }
 }
 
-.sectionInfo {
+.sectionKey {
     display: flex;
     flex-direction: row;
     gap: 3px;
+    border-bottom: 1px solid black;
 
 
 }
@@ -33,7 +34,7 @@
 .sectionContainer {
     padding: 3px;
     min-width: 50%;
-    border-bottom: 1px solid black;
+
 }
 
 .controlsContainer {

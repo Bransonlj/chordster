@@ -1,3 +1,5 @@
+@use "../../styles/colours.scss";
+
 .ratingForm {
     display: flex;
     flex-direction: column;
@@ -36,8 +38,20 @@
     margin-bottom: 10px;
     display: flex;
     flex-direction: column;
+    width: 100%;
+
+}
+
+.ratingHeader {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
     .username {
-        color: blue;
+        color: colours.$purple;
         font-weight: bold;
+    }
+
+    .date {
+        color: colours.$dark-grey;
     }
 }

@@ -1,21 +1,44 @@
+@use '../../styles/colours.scss';
+
 .mainContainer {
     width: 100%;
-    background-color: wheat;
+    background-color: colours.$pink;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-
+    border-bottom: 3px solid colours.$purple;
+    padding: 10px 5px;
 
 }
 .navContainer {
     a {
-        margin: 10px
+        margin: 10px;
+        color: colours.$black;
+        
+    }
+}
+
+.searchBar {
+    display: flex;
+    flex-direction: row;
+    input {
+        box-sizing: border-box;
+        height: 30px;
+        border-top-right-radius: 0px;
+        border-bottom-right-radius: 0px;
+    }
+
+    button {
+        height: 30px;
+        border-top-left-radius: 0px;
+        border-bottom-left-radius: 0px;
     }
 }
 
 .userContainer {
     label, a {
         margin: 10px;
+        color: colours.$grey;
     }
 }
 
@@ -23,7 +46,7 @@
     width: 800px;
     display: flex;
     justify-content: center;
-    background-color: white;
+    background-color: colours.$white;
     padding: 30px;
 
 }

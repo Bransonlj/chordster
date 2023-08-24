@@ -1,3 +1,13 @@
+@use "../../styles/colours.scss";
+
 .table {
-    border: 1px black solid;
+    border: 1px solid colours.$black;
+}
+
+.star {
+    color: colours.$starcolour;
+}
+
+.totalRatings {
+    color: colours.$dark-grey;
 }

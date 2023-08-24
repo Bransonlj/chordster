@@ -5,6 +5,7 @@ import { SongEntry } from "../../types/songs";
 import { useFetchSong } from "../../hooks/useFetchSong";
 import styles from './SongRating.module.scss';
 import Moment from 'moment';
+import StarRating from "../Components/StarRating";
 
 export default function SongRatings({songEntry}: {songEntry: SongEntry}) {
 
@@ -99,10 +100,7 @@ export default function SongRatings({songEntry}: {songEntry: SongEntry}) {
                     <form 
                         className={styles.ratingForm}
                         onSubmit={(e) => onRate(e)}>
-                        <label>Your review</label>
-                        <input type="number" 
-                            value={ratingScore} 
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRatingScore(Number(e.target.value))} />
+                        <StarRating setValue={setRatingScore} size={25} defaultValue={ratingScore}/>
                         <textarea 
                             placeholder="Write a comment..."
                             value={ratingComment} 
@@ -119,10 +117,12 @@ export default function SongRatings({songEntry}: {songEntry: SongEntry}) {
             { 
                 user && !isEditRating && <div className={styles.userRating}>
                     <div className={styles.ratingContainer}>
-                         <div className={styles.ratingHeader}>
+                        <div className={styles.ratingHeader}>
                             <span className={styles.username}>{ user.username }</span>
-                            <span>{ ratingScore }</span>
-                            <span>{Moment(songEntry.ratings.find(rating => rating.user.username === user.username)?.updatedAt).format('D MMM YYYY HH:mm')}</span>
+                            <StarRating defaultValue={ratingScore} size={20} viewOnly={true} />
+                            <span className={styles.date}>
+                                {Moment(songEntry.ratings.find(rating => rating.user.username === user.username)?.updatedAt).format('D MMM YYYY HH:mm')}
+                            </span>
                         </div>
                         <span>{ ratingComment }</span>
                     </div>

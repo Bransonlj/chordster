@@ -1,14 +1,29 @@
+@use "../../styles/colours.scss";
+
 .mainContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
+
+
+    border-top-left-radius: 10px ;
+    border-top-right-radius: 10px ;
+    background-color: colours.$pink;
+    padding-top: 10px;
 }
 
 .paramsContainer {
+    box-sizing: border-box;
     width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid colours.$purple;
+
+
 }
 
 .filterContainer {
@@ -18,21 +33,27 @@
 }
 
 .filterOption {
-    border: 1px solid black;
-    
+    border: 1px solid colours.$grey;
+    color: colours.$grey;
+
     &:hover {
         cursor: pointer;
     }
 
     &.notSelected {
         &:hover {
-            background-color: blue;
+            background-color: colours.$purple;
         }
     }
 
     &.selected {
-        background-color: aqua;
+        background-color: colours.$grey;
+        color: colours.$black;
     }
+}
+
+.contentContainer {
+    background-color: colours.$white;
 }
 
 .pageController {
