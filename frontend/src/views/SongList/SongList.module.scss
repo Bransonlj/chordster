@@ -30,25 +30,28 @@
     display: flex;
     flex-direction: row;
     gap: 5px;
+    border-bottom: 2px solid colours.$purple;
 }
 
 .filterOption {
-    border: 1px solid colours.$grey;
+    padding-left: 3px;
+    padding-right: 3px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
     color: colours.$grey;
 
-    &:hover {
-        cursor: pointer;
-    }
+    cursor: pointer;
 
     &.notSelected {
         &:hover {
             background-color: colours.$purple;
+
         }
     }
 
     &.selected {
-        background-color: colours.$grey;
-        color: colours.$black;
+        background-color: colours.$purple;
+        color: colours.$grey;
     }
 }
 
@@ -80,24 +83,5 @@
     gap: 5px;
     select {
         height: 60%;
-    }
-}
-
-
-.pageNumberContainer {
-    display: flex;
-    flex-direction: row;
-    gap: 3px;
-}
-.pageNumber{
-    padding: 0px 5px;
-    cursor: pointer;
-
-    &:hover {
-        border-bottom: 2px solid colours.$dark-grey;
-    }
-
-    &.selected {
-        border-bottom: 3px solid colours.$black;
     }
 }

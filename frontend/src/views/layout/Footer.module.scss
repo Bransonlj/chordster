@@ -1,0 +1,8 @@
+@use '../../styles/colours.scss';
+
+.mainContainer {
+    border-top: 3px solid colours.$purple;
+    width: 100%;
+    height: 100px;
+    background-color: colours.$pink;
+}

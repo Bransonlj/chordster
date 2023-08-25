@@ -1,0 +1,12 @@
+@use '../../styles/colours.scss';
+
+.content {
+    flex-grow: 1;
+    min-height: 300px;
+    width: 800px;
+    display: flex;
+    justify-content: center;
+    background-color: colours.$white;
+    padding: 30px;
+
+}

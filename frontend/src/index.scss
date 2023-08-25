@@ -37,10 +37,10 @@ body {
 
 #root {
   width: 100%;
+  align-items: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
-
+  min-height: 100vh
 }
 
 h1 {

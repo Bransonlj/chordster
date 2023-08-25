@@ -11,10 +11,11 @@ import HomePage from './views/Home/HomePage.tsx'
 import SongList from './views/SongList/SongList.tsx'
 import SongView from './views/SongView/SongView.tsx'
 import SongEdit from './views/SongForm/SongEdit.tsx'
+import Layout from './views/layout/Layout.tsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path='/' element={ <MainNavBar /> }>
+    <Route path='/' element={ <Layout /> }>
       <Route index element={ <HomePage /> } />
       <Route path='login' element={ <LoginPage /> } />
       <Route path='signup' element={ <SignupPage /> } />

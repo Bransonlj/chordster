@@ -1,0 +1,20 @@
+@use "../../styles/colours.scss";
+
+
+.pageNumberContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+.pageNumber{
+    padding: 0px 10px;
+    cursor: pointer;
+
+    &:hover {
+        border-bottom: 2px solid colours.$dark-grey;
+    }
+
+    &.selected {
+        border-bottom: 3px solid colours.$black;
+    }
+}

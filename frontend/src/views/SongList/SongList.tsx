@@ -1,10 +1,11 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { Song, SongEntrySummary } from '../../types/songs';
-import RadioButton from '../Components/RadioButton';
+import { capitalizeFirstLetter } from '../../utils/formatters';
 import styles from './SongList.module.scss';
 import SongTable from './SongTable';
 import { useSearchParams } from 'react-router-dom';
+import PageSelector from './PageSelector';
 
 // naming corresponds to API model fields.
 
@@ -93,7 +94,7 @@ export default function SongList() {
                             <label
                                 key={index} 
                                 className={`${styles.filterOption} ${filterBy === filterOption ? styles.selected: styles.notSelected}`}
-                                onClick={() => setFilterBy(filterOption)}>{filterOption}</label>
+                                onClick={() => setFilterBy(filterOption)}>{capitalizeFirstLetter(filterOption)}</label>
                         ))
                     }
                 </div>
@@ -128,26 +129,7 @@ export default function SongList() {
                                 <option value={50}>50</option>
                             </select>
                         </div>
-                        <div className={styles.pageNumberContainer}>
-                            <button 
-                                disabled={pageNumber === 1}
-                                onClick={() => setPageNumber(pageNumber - 1)}
-                                >Prev</button>
-                            { new Array(getNumberPages(songs.count)).fill(0).map((x, index) => {
-                                const thisPage = index + 1;
-                                return(
-                                    <span 
-                                        className={`${styles.pageNumber} ${pageNumber === thisPage ? styles.selected : ""}`}
-                                        key={thisPage} 
-                                        onClick={() => setPageNumber(thisPage)}    
-                                    >{thisPage}</span>
-                                )
-                            }) }
-                            <button 
-                                disabled={pageNumber === getNumberPages(songs.count)}
-                                onClick={() => setPageNumber(pageNumber + 1)}
-                                >Next</button>
-                        </div>
+                        <PageSelector currentPage={pageNumber} setCurrentPage={setPageNumber} totalPages={getNumberPages(songs.count)} />
                     </div>
                 </div>
             }

@@ -9,6 +9,11 @@
     gap: 5px;
 }
 
+.headerContainer {
+    display: grid;
+    grid-template-columns: 0.3fr 1fr 1fr;
+}
+
 .songField {
     display: flex;
     flex-direction: row;
