@@ -14,6 +14,7 @@
     "@types/lodash": "^4.14.196",
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
+    "moment": "^2.29.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.45.2",
@@ -23,6 +24,7 @@
     "sass": "^1.64.2"
   },
   "devDependencies": {
+    "@types/node": "^20.5.6",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.0.0",

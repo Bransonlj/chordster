@@ -1,0 +1,35 @@
+version: "3.8"
+services:
+  frontend:
+    build: ./frontend
+    container_name: chordster_frontend_c
+    environment:
+      VITE_SERVER_NAME: "backend"
+      VITE_SERVER_PORT: 5000
+      VITE_PORT: 8080
+    ports:
+      - '8080:8080'
+    stdin_open: true
+    networks:
+      - chordster
+  backend:
+    build: ./backend
+    container_name: chordster_backend_c
+    environment:
+      MONG_URL: "mongodb://mongo:27017/chordster"
+      PORT: 5000
+    ports:
+      - '5000:5000'
+    depends_on:
+      - mongo
+    networks:
+      - chordster
+  mongo:
+    image: mongo
+    ports:
+      - '27017:27017'
+    networks:
+      - chordster
+networks:
+  chordster:
+    driver: bridge
