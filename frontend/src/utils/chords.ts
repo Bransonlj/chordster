@@ -315,10 +315,13 @@ export function toNumericChord(chord: Chord, key: Key): NumericChord {
         numeral = numeralFromValue(interval, key.isMajor, isMajorChord(chord)) as Numeral;
     }
 
+    // if chordtype is normal minor, don't display "m"
+    const chordType = chord.chordType === "m" ? "" : chord.chordType
+
     return {
         numeral: numeral,
         accidental: accidental,
-        chordType: chord.chordType,
+        chordType: chordType,
     }
 }
 
