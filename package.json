@@ -2,7 +2,7 @@
   "name": "chordster",
   "version": "1.0.0",
   "scripts": {
-    "install:all": "npm-run-all -p install:frontend install:backend",
+    "install:all": "npm run install:frontend && npm run install:backend",
     "install:frontend": "cd frontend && npm install",
     "install:backend": "cd backend && npm install",
     "dev": "concurrently \"cd frontend && npm run dev\" \"cd backend && npm run dev\""
