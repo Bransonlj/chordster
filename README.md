@@ -5,6 +5,9 @@ Chordster is a simple web-app that allows users to upload chords for songs, and 
 <p align="center">
     <img src="docs/images/SongListView.png" width="600" />
 </p>
+<p align="center">
+    <img src="docs/images/SongView.png" width="600" />
+</p>
 
 ## Noteable Features
 
@@ -47,6 +50,6 @@ Application is fully dockerized, simply run
 
 # Acknowledgements
 
-* The Frontend was made with [React](https://react.dev/)
+* The Frontend was made with [React](https://react.dev/), written in TypeScript
 * The Backend was made with [Nodejs](https://nodejs.org/en), [Express](https://expressjs.com/)
-* Database used [MongoDB](www.mongodb.com), [Mongoose](https://mongoosejs.com/)
+* Database used: [MongoDB](www.mongodb.com), [Mongoose](https://mongoosejs.com/)
