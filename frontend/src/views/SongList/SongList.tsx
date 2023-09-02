@@ -123,8 +123,7 @@ export default function SongList() {
                         <div className={styles.searchLimit}>
                             <label>Results per page: </label>
                             <select defaultValue={searchLimit} onChange={(e) => (setSearchLimit(parseInt(e.target.value)))}>'
-                                <option value={2}>2</option>
-                                <option value={5}>5</option>
+                                <option value={15}>15</option>
                                 <option value={25}>25</option>
                                 <option value={50}>50</option>
                             </select>

@@ -11,8 +11,8 @@ export type EmptyNoteLetter = typeof emptyNoteLetter
 export type NoteLetter = NonEmptyNoteLetter | EmptyNoteLetter;
 
 // empty type "" represents major chord.
-export const majorChords = ["", "maj7"] as const;
-export const minorChords = ["min", "min7"] as const;
+export const majorChords = ["", "maj7", "7", "sus4", "sus2"] as const;
+export const minorChords = ["m", "m7"] as const;
 
 export type ChordType = typeof majorChords[number] | typeof minorChords[number];
 

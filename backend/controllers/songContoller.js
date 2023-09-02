@@ -206,6 +206,15 @@ const updateSongProtected = async (req, res) => {
 }
 
 /**
+ * Util function for rounding
+ */
+const roundToOneDecimal = (number) => {
+    const roundedString = number.toFixed(1);
+    const roundedNumber = parseFloat(roundedString);
+    return roundedNumber;
+  }
+
+/**
  * Deletes rating created by authenticated user from song belonging to given id.
  * @param {*} req 
  * @param {*} res 
@@ -217,7 +226,7 @@ const deleteRatingProtected = async (req, res) => {
         const song = await Songs.findById(songIdToDelete);
         const userRatingToDelete = song.ratings.filter((rating) => rating.user.id === userIdToDelete);
         const oldTotalScore = song.ratings.reduce((sum, rating) => sum + rating.score, 0);
-        const newAverageScore = song.ratings.length - 1 === 0 ? 0 : (oldTotalScore - userRatingToDelete[0].score) / (song.ratings.length - 1);
+        const newAverageScore = song.ratings.length - 1 === 0 ? 0 : roundToOneDecimal((oldTotalScore - userRatingToDelete[0].score) / (song.ratings.length - 1));
         await Songs.findByIdAndUpdate(
             songIdToDelete, 
             {  
@@ -258,7 +267,7 @@ const updateRatingProtected = async (req, res) => {
         const alreadyRated = userRatingToUpdate.some(x => x);
         const oldTotalScore = song.ratings.reduce((sum, rating) => sum + rating.score, 0);
         if (alreadyRated) {
-            const newAverageScore = (oldTotalScore - userRatingToUpdate[0].score + newScore) / song.ratings.length;
+            const newAverageScore = roundToOneDecimal((oldTotalScore - userRatingToUpdate[0].score + newScore) / song.ratings.length);
             await Songs.findOneAndUpdate(
                 {_id: songIdToUpdate, 'ratings.user.id': userIdToUpdate}, 
                 {
@@ -272,7 +281,7 @@ const updateRatingProtected = async (req, res) => {
                 },
                 { timestamps: false },);
         } else {
-            const newAverageScore = (oldTotalScore + newScore) / (song.ratings.length + 1);
+            const newAverageScore = roundToOneDecimal((oldTotalScore + newScore) / (song.ratings.length + 1));
             await Songs.findByIdAndUpdate(
                 songIdToUpdate, 
                 {averageScore: newAverageScore, $push: {ratings: newRating}},
